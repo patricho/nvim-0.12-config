@@ -16,27 +16,12 @@ vim.lsp.enable({
   "rust_analyzer",
 })
 
--- Keymaps (in addition to 0.12 defaults: grn, gra, grr, gri, grt, grx)
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     if not client then return end
 
     local buf = args.buf
-    local bmap = function(mode, lhs, rhs, desc)
-      vim.keymap.set(mode, lhs, rhs, { buffer = buf, silent = true, desc = desc })
-    end
-
-    bmap("n", "K",          vim.lsp.buf.hover,           "Hover docs")
-    bmap("n", "gd",         vim.lsp.buf.definition,      "Go to definition")
-    bmap("n", "gD",         vim.lsp.buf.declaration,     "Go to declaration")
-    bmap("n", "<leader>rn", vim.lsp.buf.rename,          "Rename symbol")
-    bmap("n", "<leader>ca", vim.lsp.buf.code_action,     "Code action")
-    bmap("n", "<leader>f",  function() vim.lsp.buf.format({ async = true }) end, "Format")
-
-    --if client:supports_method("textDocument/inlayHint") then
-    --  vim.lsp.inlay_hint.enable(true, { bufnr = buf })
-    --end
 
     if client:supports_method("textDocument/completion") then
       vim.lsp.completion.enable(true, client.id, buf, { autotrigger = true })
