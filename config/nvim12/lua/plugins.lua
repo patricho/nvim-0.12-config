@@ -3,6 +3,9 @@
 
 local gh = function(p) return "https://github.com/" .. p end
 
+-- Treesitter
+vim.pack.add({ gh("nvim-treesitter/nvim-treesitter") })
+
 -- Fzf pickers
 vim.pack.add({ gh("ibhagwan/fzf-lua") })
 
@@ -15,14 +18,18 @@ vim.pack.add({ gh("Bekaboo/dropbar.nvim") })
 -- Icons
 vim.pack.add({ gh("nvim-tree/nvim-web-devicons") })
 
+-- Git gutter signs
+vim.pack.add({ gh("lewis6991/gitsigns.nvim") })
+
 -- Mini: Cursor word highlight
 vim.pack.add({ gh("nvim-mini/mini.cursorword") })
-require('mini.cursorword').setup({ delay = 50 })
+require("mini.cursorword").setup({ delay = 50 })
 
 -- Snacks pickers
 vim.pack.add({ gh("folke/snacks.nvim") })
 require("snacks").setup({
     explorer = {},
+    lazygit = {},
     picker = {
         sources = {
             explorer = {
