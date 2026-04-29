@@ -25,6 +25,10 @@ vim.pack.add({ gh("lewis6991/gitsigns.nvim") })
 vim.pack.add({ gh("nvim-mini/mini.cursorword") })
 require("mini.cursorword").setup({ delay = 50 })
 
+-- Scrollbar
+vim.pack.add({ gh("lewis6991/satellite.nvim") })
+require("satellite").setup()
+
 -- Snacks pickers
 vim.pack.add({ gh("folke/snacks.nvim") })
 require("snacks").setup({

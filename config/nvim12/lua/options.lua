@@ -32,17 +32,18 @@ vim.opt.undofile       = true
 vim.opt.swapfile       = false
 
 vim.opt.termguicolors  = true
-vim.opt.winborder      = "rounded"   -- 0.12: native rounded borders everywhere
+vim.opt.guicursor      = "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50"
+vim.opt.winborder      = "rounded" -- 0.12: native rounded borders everywhere
 vim.opt.completeopt    = "menu,menuone,noinsert,popup"
-vim.opt.autocomplete   = true        -- 0.12: native auto-completion
-vim.o.complete         = "o,.,i"     -- o: Omnifunc (LSP), .: Current buffer, i: Included files
+vim.opt.autocomplete   = true      -- 0.12: native auto-completion
+vim.o.complete         = "o,.,i"   -- o: Omnifunc (LSP), .: Current buffer, i: Included files
 
 -- Use system clipboard
 vim.opt.clipboard      = "unnamedplus"
 
 -- Leader
-vim.g.mapleader      = " "
-vim.g.maplocalleader = "\\"
+vim.g.mapleader        = " "
+vim.g.maplocalleader   = "\\"
 
 -- New UI opt-in
 require("vim._core.ui2").enable({})
@@ -52,25 +53,25 @@ vim.opt.inccommand = "split"
 
 -- Diagnostics
 vim.diagnostic.config({
-  virtual_text = {
-    source = "if_many",
-    prefix = "●",
-    spacing = 20,
-  },
-  signs = {
-    text = {
-      [vim.diagnostic.severity.ERROR] = "",
-      [vim.diagnostic.severity.WARN] = "",
-      [vim.diagnostic.severity.INFO] = "",
-      [vim.diagnostic.severity.HINT] = "",
+    virtual_text = {
+        current_line = true,
+        source = "if_many",
+        prefix = "●",
+        spacing = 20,
     },
-  },
-  underline = true,
-  update_in_insert = false,
-  severity_sort = true,
-  float = {
-    border = "rounded",
-    source = true,
-  },
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = "●", --"",
+            [vim.diagnostic.severity.WARN] = "●", --"",
+            [vim.diagnostic.severity.INFO] = "●", --"",
+            [vim.diagnostic.severity.HINT] = "●", --"",
+        },
+    },
+    underline = true,
+    update_in_insert = false,
+    severity_sort = true,
+    float = {
+        border = "rounded",
+        source = true,
+    },
 })
-

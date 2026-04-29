@@ -77,6 +77,18 @@ map("n", "[q", "<cmd>cprev<cr>", "Prev quickfix")
 -- Diagnostics
 map("n", "<leader>d", function() vim.diagnostic.open_float({ scope = "line" }) end, "Diagnostic float (current line)")
 map("n", "<leader>D", vim.diagnostic.setqflist, "All diagnostics (quickfix)")
+local diag_current_line = true
+map("n", "<leader>dt", function()
+    diag_current_line = not diag_current_line
+    vim.diagnostic.config({
+        virtual_text = {
+            current_line = diag_current_line or nil,
+            source = "if_many",
+            prefix = "●",
+            spacing = 20,
+        },
+    })
+end, "Toggle diagnostic virtual text (current line / all)")
 map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, "Next diagnostic")
 map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, "Prev diagnostic")
 

@@ -52,9 +52,17 @@
       "rev": "c72328a5494b4502947a022fe69c0c47e53b6aa6",
       "src": "https://github.com/nvim-tree/nvim-web-devicons"
     },
+    "satellite.nvim": {
+      "rev": "62b0aa1a941e35e694e8a50b589150bcca8c084d",
+      "src": "https://github.com/lewis6991/satellite.nvim"
+    },
     "snacks.nvim": {
       "rev": "ad9ede6a9cddf16cedbd31b8932d6dcdee9b716e",
       "src": "https://github.com/folke/snacks.nvim"
+    },
+    "tiny-inline-diagnostic.nvim": {
+      "rev": "147af4e49f51dd48f41972de26552872b8ba7b25",
+      "src": "https://github.com/rachartier/tiny-inline-diagnostic.nvim"
     },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",
