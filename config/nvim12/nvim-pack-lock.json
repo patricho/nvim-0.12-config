@@ -20,6 +20,10 @@
       "rev": "6d808f99bd63303646794406e270bd553ad7792e",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
+    "gruvbox-material": {
+      "rev": "11d779b26a9ab2b3db8c22c6ac9fb6e8ed4fea79",
+      "src": "https://github.com/sainnhe/gruvbox-material"
+    },
     "lualine.nvim": {
       "rev": "a905eeebc4e63fdc48b5135d3bf8aea5618fb21c",
       "src": "https://github.com/nvim-lualine/lualine.nvim"
@@ -27,6 +31,10 @@
     "mini.cursorword": {
       "rev": "a7e606208197ca5d1c5288750d5163429b4c74da",
       "src": "https://github.com/nvim-mini/mini.cursorword"
+    },
+    "mini.sessions": {
+      "rev": "c96a1d1284b37ba2431092981a9d58f8c71a4fc3",
+      "src": "https://github.com/nvim-mini/mini.sessions"
     },
     "nord.nvim": {
       "rev": "80c1e5321505aeb22b7a9f23eb82f1e193c12470",

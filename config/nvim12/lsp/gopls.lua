@@ -1,6 +1,7 @@
 -- gopls config
 -- Install: go install golang.org/x/tools/gopls@latest
 -- (requires Go: winget install GoLang.Go)
+
 return {
   cmd = { "gopls" },
   filetypes = { "go", "gomod", "gowork", "gotmpl" },

@@ -5,6 +5,7 @@
 --
 -- If using csharp-ls instead of omnisharp, change the server name in init.lua
 -- to "csharp_ls" (which has a built-in 0.12 config).
+
 return {
   cmd = { "OmniSharp" },
   filetypes = { "cs", "vb" },

@@ -21,7 +21,7 @@ vim.pack.add({ gh("nvim-tree/nvim-web-devicons") })
 -- Git gutter signs
 vim.pack.add({ gh("lewis6991/gitsigns.nvim") })
 
--- Mini: Cursor word highlight
+-- Mini cursor word highlight
 vim.pack.add({ gh("nvim-mini/mini.cursorword") })
 require("mini.cursorword").setup({ delay = 50 })
 
@@ -46,22 +46,23 @@ require("snacks").setup({
     }
 })
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = "snacks_picker_input",
-  callback = function()
-    -- Disable native autocomplete in Snacks picker input so the results list updates live
-    vim.opt_local.autocomplete = false
-  end,
+    pattern = "snacks_picker_input",
+    callback = function()
+        -- Disable native autocomplete in Snacks picker input so the results list updates live
+        vim.opt_local.autocomplete = false
+    end,
 })
 
--- Catpuccin color scheme
-vim.pack.add({ gh("catppuccin/nvim") })
-vim.cmd("colorscheme catppuccin-mocha")
+-- Gruvbox color scheme
+vim.pack.add({ gh("sainnhe/gruvbox-material") })
+vim.g.gruvbox_material_enable_italic = true
+vim.g.gruvbox_material_background = "soft"
+vim.cmd.colorscheme("gruvbox-material")
 
 -- Lualine status line
 vim.pack.add({ gh("nvim-lualine/lualine.nvim") })
-require("lualine").setup({ options = { theme  = "onedark" }})
+require("lualine").setup({ options = { theme = "gruvbox" } })
 
 -- Bufferline
 vim.pack.add({ gh("akinsho/bufferline.nvim") })
 require("bufferline").setup()
-
