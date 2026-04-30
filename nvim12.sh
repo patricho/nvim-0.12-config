@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 # nvim12.sh — Launch Neovim 0.12 with isolated config and data directories.
-# Usage: ./nvim12.sh [nvim args...]
-# Recommended: add an alias in ~/.zshrc or ~/.bashrc:
-#   alias nvim12="$HOME/Dropbox/Kod/Privat/neovim-0.12/nvim12.sh"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -13,8 +10,6 @@ NVIM_BIN="$SCRIPT_DIR/bin/nvim-macos-arm64/bin/nvim"
 
 if [[ ! -x "$NVIM_BIN" ]]; then
     echo "error: nvim not found at: $NVIM_BIN" >&2
-    echo "Download nvim-macos-arm64.tar.gz from https://github.com/neovim/neovim/releases/tag/v0.12.2" >&2
-    echo "and extract it so that bin/nvim-macos-arm64/bin/nvim exists." >&2
     exit 1
 fi
 
