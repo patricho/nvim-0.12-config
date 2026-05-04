@@ -1,4 +1,5 @@
 bin/nvim-win64
+bin/nvim-macos-arm64
 cache
 state
 data

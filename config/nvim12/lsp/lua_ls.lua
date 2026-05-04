@@ -1,6 +1,7 @@
 -- lua-language-server config
 -- Install: winget install LuaLS.lua-language-server
--- or: https://github.com/LuaLS/lua-language-server/releases
+-- Or: brew install lua-language-server
+-- Or: https://github.com/LuaLS/lua-language-server/releases
 return {
   cmd = { "lua-language-server" },
   filetypes = { "lua" },

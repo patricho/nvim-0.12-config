@@ -137,6 +137,315 @@ needed.
 | [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)          | Status line                                        |
 | [bufferline.nvim](https://github.com/akinsho/bufferline.nvim)         | Buffer tab line                                    |
 
+## Option Reference
+
+The main editor options live in `config/nvim12/lua/options.lua`. That file keeps comments short so
+the active settings are easy to scan; this section explains the less obvious options in more detail.
+
+### `clipboard`
+
+`clipboard` controls whether normal yank, delete, change, and put operations use Neovim's unnamed
+register only, or whether they are connected to the operating system clipboard.
+
+This config uses:
+
+```lua
+vim.opt.clipboard = "unnamedplus"
+```
+
+Supported values are comma-separated flags:
+
+| Value         | Meaning                                                                                      |
+| ------------- | -------------------------------------------------------------------------------------------- |
+| `unnamed`     | Use the `"*` selection register for operations that would normally use the unnamed register. |
+| `unnamedplus` | Use the `"+` clipboard register for operations that would normally use the unnamed register. |
+
+The `"+` register is the system clipboard on most desktop setups, so `unnamedplus` makes regular
+operations like `y`, `d`, `c`, and `p` interact with the same clipboard used by other applications.
+Explicit registers still win: if you type `"ayy`, Neovim yanks into register `a` regardless of this
+setting.
+
+If both `unnamed` and `unnamedplus` are set, yank and delete operations also copy to `"*`, while put
+operations use `"+`.
+
+### `inccommand`
+
+`inccommand` previews the result of commands while they are still being typed. It applies to
+`:substitute`, `:smagic`, `:snomagic`, and user commands created with the command-preview flag.
+
+This config uses:
+
+```lua
+vim.opt.inccommand = "split"
+```
+
+Supported values:
+
+| Value     | Meaning                                                                 |
+| --------- | ----------------------------------------------------------------------- |
+| `""`      | Disable live command previews.                                          |
+| `nosplit` | Show the command effect incrementally in the current buffer.            |
+| `split`   | Like `nosplit`, but also opens a preview window for off-screen results. |
+
+Example: while typing `:%s/foo/bar/g`, matches update live before pressing Enter. With `split`,
+Neovim can also show changes that would happen outside the visible part of the current window.
+
+If the preview becomes too slow and exceeds `redrawtime`, Neovim disables the preview until command
+line mode ends.
+
+### `complete`
+
+`complete` controls the sources used by insert-mode completion with `CTRL-N`, `CTRL-P`, whole-line
+completion, and native `autocomplete`. It is a comma-separated list of source flags.
+
+This config uses:
+
+```lua
+vim.o.complete = "o,.,i"
+```
+
+That means completion asks `omnifunc` first, then scans the current buffer, then scans included
+files. For LSP-backed buffers, Neovim's LSP client sets `omnifunc`, so the `o` source provides LSP
+completion.
+
+Supported source flags:
+
+| Flag      | Source                                                                |
+| --------- | --------------------------------------------------------------------- |
+| `.`       | Current buffer.                                                       |
+| `w`       | Buffers visible in other windows.                                     |
+| `b`       | Other loaded buffers in the buffer list.                              |
+| `u`       | Unloaded buffers in the buffer list.                                  |
+| `U`       | Buffers that are not in the buffer list.                              |
+| `k`       | Files configured by the `dictionary` option.                          |
+| `kspell`  | Spell suggestions from active spell checking.                         |
+| `k{dict}` | A specific dictionary file or file pattern.                           |
+| `s`       | Files configured by the `thesaurus` option.                           |
+| `s{tsr}`  | A specific thesaurus file or file pattern.                            |
+| `i`       | Current file and files included from it.                              |
+| `d`       | Defined names or macros from the current file and included files.     |
+| `]`       | Tags.                                                                 |
+| `t`       | Tags, equivalent to `]`.                                              |
+| `f`       | Buffer names, not buffer contents.                                    |
+| `F`       | Function from the `completefunc` option.                              |
+| `F{func}` | A specific custom completion function. Multiple `F{func}` flags work. |
+| `o`       | Function from the `omnifunc` option.                                  |
+
+A source can be limited by appending `^{count}`. For example, `.^9,t^5` limits current-buffer
+matches to 9 and tag matches to 5. The limit only applies to forward completion with `CTRL-N`; it is
+ignored for backward completion with `CTRL-P`.
+
+Function sources (`F`, `F{func}`, and `o`) can complete non-keyword text and can choose a different
+replacement start position than normal keyword-based sources. Slow custom functions should call
+`complete_check()` periodically so autocomplete remains responsive.
+
+### `guicursor`
+
+`guicursor` configures cursor shape, blinking, and highlight groups per editor mode. Despite the
+name, it also works in many terminal UIs.
+
+This config uses:
+
+```lua
+vim.opt.guicursor = "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50"
+```
+
+Each comma-separated part has this shape:
+
+```text
+mode-list:argument-list
+```
+
+The mode list is dash-separated. Supported modes:
+
+| Mode | Meaning                               |
+| ---- | ------------------------------------- |
+| `n`  | Normal mode.                          |
+| `v`  | Visual mode.                          |
+| `ve` | Visual mode with exclusive selection. |
+| `o`  | Operator-pending mode.                |
+| `i`  | Insert mode.                          |
+| `r`  | Replace mode.                         |
+| `c`  | Command-line Normal mode.             |
+| `ci` | Command-line Insert mode.             |
+| `cr` | Command-line Replace mode.            |
+| `sm` | `showmatch` in Insert mode.           |
+| `t`  | Terminal mode.                        |
+| `a`  | All modes.                            |
+
+The argument list is also dash-separated. Common arguments:
+
+| Argument                    | Meaning                                                                 |
+| --------------------------- | ----------------------------------------------------------------------- |
+| `block`                     | Block cursor filling the full character cell.                           |
+| `ver{N}`                    | Vertical bar cursor, `{N}` percent of the character width.              |
+| `hor{N}`                    | Horizontal bar cursor, `{N}` percent of the character height.           |
+| `blinkwait{N}`              | Delay before blinking starts, in milliseconds.                          |
+| `blinkon{N}`                | Time the cursor is visible during blink, in milliseconds.               |
+| `blinkoff{N}`               | Time the cursor is hidden during blink, in milliseconds.                |
+| `{group-name}`              | Highlight group used for cursor appearance.                             |
+| `{group-name}/{group-name}` | Highlight group for normal mappings, then for active language mappings. |
+
+In this config, Normal/Visual/Command-line Normal use a block cursor, Insert and related modes use a
+25% vertical bar, Replace modes use a 20% horizontal bar, and Operator-pending mode uses a 50%
+horizontal bar.
+
+Set `guicursor` to an empty string to disable cursor styling:
+
+```vim
+:set guicursor=
+```
+
+### `completeopt`
+
+`completeopt` controls how insert-mode completion is displayed and inserted. It does not choose the
+completion sources; that is `complete`.
+
+This config uses:
+
+```lua
+vim.opt.completeopt = "menu,menuone,noinsert,popup"
+```
+
+Supported values:
+
+| Value       | Meaning                                                                                         |
+| ----------- | ----------------------------------------------------------------------------------------------- |
+| `fuzzy`     | Enable fuzzy matching for completion candidates.                                                |
+| `longest`   | Insert the longest common prefix of matching items.                                             |
+| `menu`      | Show the popup completion menu when there is more than one match.                               |
+| `menuone`   | Show the popup completion menu even when there is only one match.                               |
+| `nearest`   | Sort current-buffer matches by proximity to the cursor. Has no effect with `fuzzy`.             |
+| `noinsert`  | Do not insert match text until an item is selected. Requires `menu` or `menuone`.               |
+| `noselect`  | Like `noinsert`, but do not preselect any menu item. Takes precedence over `noinsert`.          |
+| `nosort`    | Keep original candidate order when `fuzzy` is enabled instead of sorting by fuzzy score.        |
+| `popup`     | Show extra information for the selected completion item in a popup window. Overrides `preview`. |
+| `preinsert` | Insert the first candidate beyond the typed leader as highlighted preview text.                 |
+| `preselect` | Select a completion item that has its `preselect` field set, for example by an LSP server.      |
+| `preview`   | Show extra information for the selected completion item in the preview window.                  |
+
+When native `autocomplete` is enabled, `noselect` is automatically enabled unless `preinsert` is also
+enabled. Only `fuzzy`, `longest`, `popup`, `preinsert`, `preselect`, and `preview` have an effect
+while `autocomplete` is active.
+
+The configured value means: show a menu, show it even for a single item, do not insert text until a
+selection is made, and show completion documentation/details in a popup window.
+
+### `statusline`
+
+`statusline` defines the content of each window's status line. This config uses `lualine.nvim`, so
+the raw option is mostly managed by the plugin, but the format language is still useful when reading
+or writing custom status lines.
+
+A statusline is regular text mixed with `%` items:
+
+```text
+%-0{minwid}.{maxwid}{item}
+```
+
+Only `{item}` is required. The optional pieces control padding, alignment, and truncation:
+
+| Part     | Meaning                                                                     |
+| -------- | --------------------------------------------------------------------------- |
+| `-`      | Left-align the item.                                                        |
+| `0`      | Pad numeric items with leading zeroes.                                      |
+| `minwid` | Minimum width.                                                              |
+| `maxwid` | Maximum width before truncation.                                            |
+| `item`   | One-letter statusline item, expression, highlight switch, or layout marker. |
+
+Common statusline items:
+
+| Item | Meaning                                                  |
+| ---- | -------------------------------------------------------- |
+| `%f` | File path as typed or relative to the current directory. |
+| `%F` | Full file path.                                          |
+| `%t` | File name only.                                          |
+| `%m` | Modified flag, shown as `[+]`.                           |
+| `%r` | Readonly flag, shown as `[RO]`.                          |
+| `%h` | Help buffer flag.                                        |
+| `%w` | Preview window flag.                                     |
+| `%y` | Filetype.                                                |
+| `%n` | Buffer number.                                           |
+| `%l` | Current line number.                                     |
+| `%L` | Total lines in buffer.                                   |
+| `%c` | Current byte column.                                     |
+| `%v` | Current virtual/screen column.                           |
+| `%p` | Percentage through file by line.                         |
+| `%P` | Percentage through the displayed window.                 |
+| `%=` | Split left and right aligned sections.                   |
+| `%<` | Mark where truncation should happen if space is limited. |
+| `%%` | Literal percent sign.                                    |
+
+Expressions are also supported:
+
+| Form        | Meaning                                                                          |
+| ----------- | -------------------------------------------------------------------------------- |
+| `%!expr`    | Use the result of an expression as the full statusline format.                   |
+| `%{expr}`   | Evaluate an expression and insert the result.                                    |
+| `%{%expr%}` | Evaluate an expression, then re-evaluate the result as statusline format syntax. |
+
+Highlight and click-related items exist too, for example `%#Group#` to switch highlight group and
+`%*` to restore the default highlight. Custom statusline expressions run during redraw, so expensive
+logic can make the UI feel slow.
+
+### `statuscolumn`
+
+`statuscolumn` defines the left-side column area of a window. That area normally contains line
+numbers, signs, and folds. Its format is based on `statusline`, but it is evaluated for each drawn
+screen line instead of once per window.
+
+This config does not set `statuscolumn`, so Neovim uses its default number, sign, and fold columns.
+If it is set later, these statuscolumn-specific items are the important ones:
+
+| Item | Meaning                                   |
+| ---- | ----------------------------------------- |
+| `%l` | Line number for the currently drawn line. |
+| `%s` | Sign column for the currently drawn line. |
+| `%C` | Fold column for the currently drawn line. |
+
+Useful variables while evaluating `statuscolumn`:
+
+| Variable    | Meaning                                                                             |
+| ----------- | ----------------------------------------------------------------------------------- |
+| `v:lnum`    | Buffer line number being drawn.                                                     |
+| `v:relnum`  | Relative line number being drawn.                                                   |
+| `v:virtnum` | Negative for virtual lines, zero for real buffer lines, positive for wrapped parts. |
+
+The width follows the normal column options such as `numberwidth`, `signcolumn`, and `foldcolumn`.
+It can grow with the evaluated format, but shrinking usually happens only when the line count changes
+or when `statuscolumn` is set again.
+
+Click handlers with `%@Func@...%T` are supported, but the same function is used for each row in the
+same column. Because `statuscolumn` is evaluated for every visible line, keep expressions cheap.
+
+### `mouse`
+
+`mouse` enables mouse support per mode. This config uses:
+
+```lua
+vim.opt.mouse = "a"
+```
+
+Supported mode flags:
+
+| Flag | Meaning                                      |
+| ---- | -------------------------------------------- |
+| `n`  | Normal mode.                                 |
+| `v`  | Visual mode.                                 |
+| `i`  | Insert mode.                                 |
+| `c`  | Command-line mode.                           |
+| `h`  | All previous modes when editing a help file. |
+| `a`  | All previous modes.                          |
+| `r`  | Hit-enter and more-prompt prompts.           |
+
+With mouse support enabled, left-click places the cursor, dragging a statusline or vertical separator
+resizes windows, and Visual mode supports double-click word selection, triple-click line selection,
+and quadruple-click block selection. Hold Shift while using the mouse to temporarily bypass Neovim's
+mouse handling in many terminals.
+
+When mouse support is enabled in a terminal, copy/paste may use the `"*` register if available, so it
+interacts with `clipboard` behavior.
+
 ## Treesitter
 
 Parsers are managed by nvim-treesitter and listed in `config/nvim12/lua/treesitter.lua`.
@@ -199,31 +508,31 @@ Neovim 0.12 defaults.
 
 2. **Check if Neovim 0.12 already has a built-in config** for it:
 
-    ```
-    :echo glob($VIMRUNTIME .. "/lsp/*.lua")
-    ```
+   ```
+   :echo glob($VIMRUNTIME .. "/lsp/*.lua")
+   ```
 
-    or browse `$VIMRUNTIME/lsp/` in your file explorer. If a file exists for your server you may not
-    need step 3 at all.
+   or browse `$VIMRUNTIME/lsp/` in your file explorer. If a file exists for your server you may not
+   need step 3 at all.
 
 3. **Create an override config** (optional but recommended) at
    `config/nvim12/lsp/<server-name>.lua`. Minimal example:
 
-    ```lua
-    return {
-        cmd = { "my-server", "--stdio" },
-        filetypes = { "mylang" },
-        root_markers = { "myproject.json", ".git" },
-    }
-    ```
+   ```lua
+   return {
+       cmd = { "my-server", "--stdio" },
+       filetypes = { "mylang" },
+       root_markers = { "myproject.json", ".git" },
+   }
+   ```
 
 4. **Enable the server** in `config/nvim12/lua/lsp.lua`:
-    ```lua
-    vim.lsp.enable({
-        -- existing servers ...
-        "my-server",   -- add here
-    })
-    ```
+   ```lua
+   vim.lsp.enable({
+       -- existing servers ...
+       "my-server",   -- add here
+   })
+   ```
 
 **Finding servers:**
 

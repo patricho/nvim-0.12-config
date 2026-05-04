@@ -1,60 +1,48 @@
-vim.opt.number         = true
-vim.opt.relativenumber = true
-vim.opt.signcolumn     = "yes"
-vim.opt.cursorline     = true
-vim.opt.wrap           = false
-vim.opt.scrolloff      = 8
-vim.opt.sidescrolloff  = 8
-vim.opt.cmdheight      = 1
-vim.opt.mouse          = "a"
-vim.opt.showmode       = false
-vim.opt.breakindent    = true
-vim.opt.updatetime     = 250
-vim.opt.timeoutlen     = 300
-vim.opt.list           = true
-vim.opt.listchars      = { tab = "» ", trail = "·", nbsp = "␣" }
-vim.opt.textwidth      = 80
+vim.g.mapleader        = " " -- Leader key
+vim.g.maplocalleader   = "\\" -- Local leader key
+vim.opt.autocomplete   = true -- Native autocomplete
+vim.opt.breakindent    = true -- Wrapped-line indent
+vim.opt.clipboard      = "unnamedplus" -- System clipboard
+vim.opt.cmdheight      = 0 -- Command line height
+vim.opt.complete       = "o,.,i" -- Completion sources
+vim.opt.completeopt    = "menu,menuone,noinsert,noselect,popup" -- Completion menu
+vim.opt.cursorline     = true -- Cursor line
+vim.opt.expandtab      = true -- Spaces for tabs
+vim.opt.guicursor      = "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50" -- Cursor shape
+vim.opt.hlsearch       = true -- Search highlights
+vim.opt.ignorecase     = true -- Case-insensitive search
+vim.opt.incsearch      = true -- Live search
+vim.opt.list           = true -- Whitespace display
+vim.opt.listchars      = { tab = "» ", trail = "·", nbsp = "␣" } -- Whitespace markers
+vim.opt.mouse          = "a" -- Mouse support
+vim.opt.number         = true -- Line numbers
+vim.opt.relativenumber = true -- Relative numbers
+vim.opt.scrolloff      = 8 -- Vertical padding
+vim.opt.shiftwidth     = 4 -- Indent width
+vim.opt.showmode       = false -- Mode text
+vim.opt.sidescrolloff  = 8 -- Horizontal padding
+vim.opt.signcolumn     = "yes" -- Sign gutter
+vim.opt.smartcase      = true -- Uppercase-sensitive search
+vim.opt.smartindent    = true -- Smart indent
+vim.opt.splitbelow     = true -- Below splits
+vim.opt.splitright     = true -- Right splits
+vim.opt.swapfile       = false -- Swap files
+vim.opt.tabstop        = 4 -- Tab width
+vim.opt.termguicolors  = true -- True color
+vim.opt.textwidth      = 80 -- Text width
+vim.opt.timeoutlen     = 300 -- Mapping timeout
+vim.opt.undofile       = true -- Persistent undo
+vim.opt.updatetime     = 250 -- Idle update delay
+vim.opt.winborder      = "rounded" -- Float borders
+vim.opt.wrap           = false -- Line wrapping
 
-vim.opt.tabstop        = 4
-vim.opt.shiftwidth     = 4
-vim.opt.expandtab      = true
-vim.opt.smartindent    = true
+require("vim._core.ui2").enable({}) -- New UI layer
 
-vim.opt.ignorecase     = true
-vim.opt.smartcase      = true
-vim.opt.hlsearch       = true
-vim.opt.incsearch      = true
-
-vim.opt.splitright     = true
-vim.opt.splitbelow     = true
-
-vim.opt.undofile       = true
-vim.opt.swapfile       = false
-
-vim.opt.termguicolors  = true
-vim.opt.guicursor      = "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50"
-vim.opt.winborder      = "rounded" -- 0.12: native rounded borders everywhere
-vim.opt.completeopt    = "menu,menuone,noinsert,popup"
-vim.opt.autocomplete   = true      -- 0.12: native auto-completion
-vim.o.complete         = "o,.,i"   -- o: Omnifunc (LSP), .: Current buffer, i: Included files
-
--- Use system clipboard
-vim.opt.clipboard      = "unnamedplus"
-
--- Leader
-vim.g.mapleader        = " "
-vim.g.maplocalleader   = "\\"
-
--- New UI opt-in
-require("vim._core.ui2").enable({})
-
--- Preview substitutions live, as you type
-vim.opt.inccommand = "split"
+vim.opt.inccommand = "split" -- Substitution preview
 
 -- Diagnostics
 vim.diagnostic.config({
     virtual_text = {
-        current_line = true,
         source = "if_many",
         prefix = "●",
         spacing = 20,

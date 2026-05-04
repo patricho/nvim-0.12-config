@@ -46,6 +46,7 @@ map("n", "<leader>Wl", "<C-w>v", "[W]indow [s]plit right")
 map("n", "<leader>Wk", "<C-w>s<C-w>k", "[W]indow [s]plit up")
 map("n", "<leader>Wj", "<C-w>s", "Window split down")
 map("n", "<leader>Wc", "<C-w>q", "Window close")
+map("n", "<leader>WC", "<C-w>o", "Window close others")
 
 -- Buffer navigation
 map("n", "<s-tab>", "<cmd>bprev<cr>", "Prev buffer")
@@ -55,20 +56,20 @@ map("n", "<leader>w", "<cmd>write<cr>", "[W]rite buffer")
 
 -- Pickers and search
 map("n", "<leader>e", function() Snacks.explorer.reveal() end, "Snacks [E]xplorer")
-map("n", "<leader>ff", function() Snacks.picker('git_files') end, "[F]ind [f]iles")
+map("n", "<leader>ff", function() Snacks.picker('git_files') end, "[F]ind [F]iles")
 map("n", "<leader>fF", function() Snacks.picker('files') end, "[F]ind all [F]iles")
 map("n", "<leader>fw", function() Snacks.picker('git_grep') end, "[F]ind [w]ords")
 map("n", "<leader>fW", function() Snacks.picker('grep') end, "[F]ind [W]ords in all files")
-map("n", "<leader>fs", function() Snacks.picker('lsp_symbols') end, "[F]ind buffer [s]ymbols")
+map("n", "<leader>fs", function() Snacks.picker('lsp_symbols') end, "[F]ind buffer [S]ymbols")
 map("n", "<leader>fS", function() Snacks.picker('lsp_workspace_symbols') end, "[F]ind workspace [S]ymbols")
-map("n", "<leader>fd", function() Snacks.picker('diagnostics_buffer') end, "[F]ind buffer [d]iagnostics")
+map("n", "<leader>fd", function() Snacks.picker('diagnostics_buffer') end, "[F]ind buffer [D]iagnostics")
 map("n", "<leader>fD", function() Snacks.picker('diagnostics') end, "[F]ind workspace [D]iagnostics")
 map("n", "<leader>fc", function() Snacks.picker('grep_word') end, "[F]ind word under [c]ursor")
 map("v", "<leader>fc", function() Snacks.picker('grep_word') end, "[F]ind selected words under [c]ursor")
 map("n", "<leader>fC", "<cmd>FzfLua grep_cWORD<cr>", "[F]ind WORD under [C]ursor")
 map("n", "<leader>fh", "<cmd>FzfLua history<cr>", "[F]ind buffer [H]istory")
 map("n", "<esc>", "<cmd>nohlsearch<CR>", "Clear search highlights")
--- ["-"] = { function() require("flash").jump() end, desc = "Flash jump" },
+map("n", "-", function() require("flash").jump() end, "Flash jump")
 
 -- Quickfix
 map("n", "]q", "<cmd>cnext<cr>", "Next quickfix")
@@ -77,8 +78,8 @@ map("n", "[q", "<cmd>cprev<cr>", "Prev quickfix")
 -- Diagnostics
 map("n", "<leader>d", function() vim.diagnostic.open_float({ scope = "line" }) end, "Diagnostic float (current line)")
 map("n", "<leader>D", vim.diagnostic.setqflist, "All diagnostics (quickfix)")
-local diag_current_line = true
-map("n", "<leader>dt", function()
+local diag_current_line = nil
+map("n", "<leader>ld", function()
     diag_current_line = not diag_current_line
     vim.diagnostic.config({
         virtual_text = {
@@ -88,7 +89,7 @@ map("n", "<leader>dt", function()
             spacing = 20,
         },
     })
-end, "Toggle diagnostic virtual text (current line / all)")
+end, "[L]SP toggle [D]iagnostic virtual text")
 map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, "Next diagnostic")
 map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, "Prev diagnostic")
 
@@ -96,8 +97,10 @@ map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, "Prev diagnos
 local gs = require('gitsigns')
 map('n', '<leader>gs', gs.stage_hunk, 'GitSigns: Stage hunk')
 map('n', '<leader>gr', gs.reset_hunk, 'GitSigns: Reset hunk')
-map('v', '<leader>gs', function() gs.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end, 'GitSigns: Stage selected hunk')
-map('v', '<leader>gr', function() gs.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end, 'GitSigns: Reset selected hunk')
+map('v', '<leader>gs', function() gs.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end,
+    'GitSigns: Stage selected hunk')
+map('v', '<leader>gr', function() gs.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end,
+    'GitSigns: Reset selected hunk')
 map('n', '<leader>gS', gs.stage_buffer, 'GitSigns: Stage buffer')
 map('n', '<leader>gR', gs.reset_buffer, 'GitSigns: Reset buffer')
 map('n', '<leader>gbl', gs.blame_line, 'GitSigns: Blame (line)')
@@ -144,4 +147,3 @@ vim.api.nvim_create_autocmd("LspAttach", {
         bmap("n", "<leader>lf", function() vim.lsp.buf.format({ async = true }) end, "[L]SP [F]ormat buffer")
     end,
 })
-

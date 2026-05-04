@@ -21,6 +21,9 @@ vim.pack.add({ gh("nvim-tree/nvim-web-devicons") })
 -- Git gutter signs
 vim.pack.add({ gh("lewis6991/gitsigns.nvim") })
 
+-- Flash jump
+vim.pack.add({ gh("folke/flash.nvim") })
+
 -- Mini cursor word highlight
 vim.pack.add({ gh("nvim-mini/mini.cursorword") })
 require("mini.cursorword").setup({ delay = 50 })
@@ -29,7 +32,7 @@ require("mini.cursorword").setup({ delay = 50 })
 vim.pack.add({ gh("lewis6991/satellite.nvim") })
 require("satellite").setup()
 
--- Snacks pickers
+-- Snacks
 vim.pack.add({ gh("folke/snacks.nvim") })
 require("snacks").setup({
     explorer = {},
@@ -46,6 +49,15 @@ require("snacks").setup({
                     layout = { height = 0.9 }
                 }
             }
+        }
+    },
+    statuscolumn = {},
+    indent = {
+        indent = {
+            char = "│",
+        },
+        animate = {
+            enabled = false,
         }
     }
 })
