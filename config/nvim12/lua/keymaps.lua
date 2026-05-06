@@ -23,14 +23,14 @@ map("n", "S", '"_S', "Change without yank")
 map("n", "x", '"_x', "Delete without yank")
 map("n", "X", '"_X', "Delete without yank")
 map("n", "r", '"_ciw', "Change inner word")
-map("n", "R", '"_ciW', "Change inner Word")
+map("n", "R", '"_ciW', "Change inner WORD")
 map("n", "§", "yiw", "Yank inner word")
 map("n", "°", '"_diwP', "Paste inner word")
 map("n", "½", '"_diwP', "Paste inner word")
 map("n", "ö", '"_dd', "Delete row")
 map("n", "Ö", 'ma"8yy"8p`a', "Duplicate line")
-map("n", "Ä", "maO<Esc>`a", "Insert empty line above")
-map("n", "ä", "mao<Esc>`a", "Insert empty line below")
+map("n", "Ä", "maO<esc>`a", "Insert empty line above")
+map("n", "ä", "mao<esc>`a", "Insert empty line below")
 map("v", "Ö", '"8y"8P', "Duplicate selected lines")
 map("v", "p", '"_dP', "Paste over selection without yanking")
 map("v", "c", '"_c', "Change without yank")
@@ -135,6 +135,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
             vim.keymap.set(mode, lhs, rhs, { buffer = args.buf, silent = true, desc = desc })
         end
 
+        -- Hide autocomplete first, when showing signature help
+        local insert_signature_help = function()
+            if vim.fn.pumvisible() == 1 then
+                feed("<C-e>")
+                vim.schedule(vim.lsp.buf.signature_help)
+                return
+            end
+
+            vim.lsp.buf.signature_help()
+        end
+
         bmap("n", "K", vim.lsp.buf.hover, "Hover docs")
         bmap("n", "gh", vim.lsp.buf.hover, "Hover docs")
         bmap("n", "<leader>h", vim.lsp.buf.hover, "Hover docs")
@@ -142,8 +153,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
         bmap("n", "<leader>r", vim.lsp.buf.rename, "[R]ename symbol")
         bmap("n", "ga", vim.lsp.buf.code_action, "[G]o code [A]ction")
         bmap("n", "<leader>a", vim.lsp.buf.code_action, "Code [A]ction")
-        bmap("n", "gi", vim.lsp.buf.definition, "Go to implementation")
-        bmap("n", "gd", vim.lsp.buf.declaration, "[G]o to [D]eclaration")
+        bmap("n", "gd", vim.lsp.buf.definition, "Go to [D]efinition")
+        bmap("n", "gD", vim.lsp.buf.declaration, "Go to [D]eclaration")
+        bmap("n", "gi", vim.lsp.buf.implementation, "[G]o to [I]mplementation")
+        bmap("n", "gu", vim.lsp.buf.references, "[G]o to [U]sages")
+        bmap("n", "gs", insert_signature_help, "[G]o to [S]ignature help")
+        bmap("n", "<C-s>", insert_signature_help, "Signature help")
+        bmap("i", "<C-s>", insert_signature_help, "Signature help")
         bmap("n", "<leader>lf", function() vim.lsp.buf.format({ async = true }) end, "[L]SP [F]ormat buffer")
     end,
 })

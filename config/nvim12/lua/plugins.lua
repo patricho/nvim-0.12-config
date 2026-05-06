@@ -18,8 +18,15 @@ vim.pack.add({ gh("Bekaboo/dropbar.nvim") })
 -- Icons
 vim.pack.add({ gh("nvim-tree/nvim-web-devicons") })
 
--- Git gutter signs
+-- Git gutter signs, statusline blame
 vim.pack.add({ gh("lewis6991/gitsigns.nvim") })
+require("gitsigns").setup({
+    current_line_blame = true,
+    current_line_blame_opts = {
+        delay = 250,
+        virt_text = false,
+    },
+})
 
 -- Flash jump
 vim.pack.add({ gh("folke/flash.nvim") })
@@ -77,7 +84,7 @@ vim.cmd.colorscheme("gruvbox-material")
 
 -- Lualine status line
 vim.pack.add({ gh("nvim-lualine/lualine.nvim") })
-require("lualine").setup({ options = { theme = "gruvbox" } })
+require("plugins/lualine")
 
 -- Bufferline
 vim.pack.add({ gh("akinsho/bufferline.nvim") })

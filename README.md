@@ -304,7 +304,7 @@ completion sources; that is `complete`.
 This config uses:
 
 ```lua
-vim.opt.completeopt = "menu,menuone,noinsert,popup"
+vim.opt.completeopt = "menu,menuone,noinsert,popup,preview"
 ```
 
 Supported values:
@@ -445,6 +445,259 @@ mouse handling in many terminals.
 
 When mouse support is enabled in a terminal, copy/paste may use the `"*` register if available, so it
 interacts with `clipboard` behavior.
+
+## Highlight Reference
+
+Highlight overrides live in `config/nvim12/lua/colors.lua`. That file is loaded after the color
+scheme, so its `vim.api.nvim_set_hl()` calls can override defaults from `gruvbox-material` and from
+plugins.
+
+Basic shape:
+
+```lua
+vim.api.nvim_set_hl(0, "GroupName", { fg = "#ffffff", bg = "#000000", bold = true })
+```
+
+Common attributes:
+
+| Attribute       | Meaning                                                    |
+| --------------- | ---------------------------------------------------------- |
+| `fg`            | Foreground/text color.                                     |
+| `bg`            | Background color.                                          |
+| `sp`            | Special color used by undercurl/underline styles.          |
+| `bold`          | Bold text.                                                 |
+| `italic`        | Italic text.                                               |
+| `underline`     | Straight underline.                                        |
+| `undercurl`     | Curly underline, often used for diagnostics.               |
+| `strikethrough` | Strikethrough text.                                        |
+| `reverse`       | Swap foreground and background.                            |
+| `link`          | Link this group to another highlight group.                |
+
+Example link:
+
+```lua
+vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { link = "DiagnosticError" })
+```
+
+### Cursor And Lines
+
+These groups control the cursor, current line, line numbers, and related editor chrome.
+
+| Group              | What it affects                                                   |
+| ------------------ | ----------------------------------------------------------------- |
+| `Cursor`           | Normal cursor color when controlled by Neovim.                    |
+| `lCursor`          | Cursor color when language mappings are active.                   |
+| `CursorIM`         | Cursor color in Input Method mode.                                |
+| `TermCursor`       | Cursor in terminal buffers.                                       |
+| `TermCursorNC`     | Terminal cursor when the terminal window is not focused.          |
+| `CursorLine`       | Background for the current screen line.                           |
+| `CursorColumn`     | Background for the current screen column.                         |
+| `LineNr`           | Line numbers.                                                     |
+| `CursorLineNr`     | Line number for the current line.                                 |
+| `SignColumn`       | Sign column background.                                           |
+| `FoldColumn`       | Fold column.                                                      |
+| `ColorColumn`      | Columns marked by `colorcolumn`.                                  |
+
+Cursor shape is controlled by `guicursor`; these highlight groups only control cursor colors when the
+terminal or UI supports it.
+
+Example:
+
+```lua
+vim.api.nvim_set_hl(0, "CursorLine", { bg = "#2a2420" })
+vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#fabd2f", bold = true })
+```
+
+### Selection And Matching
+
+These groups are useful for selections, matched brackets, and highlighted words.
+
+| Group                   | What it affects                                      |
+| ----------------------- | ---------------------------------------------------- |
+| `Visual`                | Visual mode selection.                               |
+| `VisualNOS`             | Visual selection when Neovim is not owning selection.|
+| `MatchParen`            | Matching bracket, parenthesis, or brace.             |
+| `MiniCursorword`        | Other occurrences of word under cursor.              |
+| `MiniCursorwordCurrent` | Current word under cursor from `mini.cursorword`.    |
+| `IlluminatedWordText`   | Text references from illumination-style plugins.     |
+| `IlluminatedWordRead`   | Read references from illumination-style plugins.     |
+| `IlluminatedWordWrite`  | Write references from illumination-style plugins.    |
+
+This config currently customizes `Visual`, `MatchParen`, `MiniCursorword`,
+`MiniCursorwordCurrent`, and the `IlluminatedWord*` groups.
+
+### Search
+
+Search highlighting is separate from LSP references and cursor-word highlighting.
+
+| Group        | What it affects                                                |
+| ------------ | -------------------------------------------------------------- |
+| `Search`     | Search matches from `/`, `?`, and `hlsearch`.                  |
+| `CurSearch`  | Current search match.                                          |
+| `IncSearch`  | Incremental search match while typing a search.                |
+| `Substitute` | Replacement preview during `:substitute` with `inccommand`.    |
+
+Example:
+
+```lua
+vim.api.nvim_set_hl(0, "Search", { fg = "#1d2021", bg = "#fabd2f" })
+vim.api.nvim_set_hl(0, "CurSearch", { fg = "#1d2021", bg = "#fe8019", bold = true })
+```
+
+### Diagnostics
+
+Diagnostics use several groups per severity. The severity suffixes are `Error`, `Warn`, `Info`,
+`Hint`, and sometimes `Ok`.
+
+| Group pattern                 | What it affects                                            |
+| ----------------------------- | ---------------------------------------------------------- |
+| `DiagnosticError`             | Base diagnostic color for errors.                          |
+| `DiagnosticWarn`              | Base diagnostic color for warnings.                        |
+| `DiagnosticInfo`              | Base diagnostic color for informational diagnostics.        |
+| `DiagnosticHint`              | Base diagnostic color for hints.                           |
+| `DiagnosticOk`                | Base diagnostic color for OK/success diagnostics.          |
+| `DiagnosticSign{Severity}`    | Sign column diagnostic marker.                             |
+| `DiagnosticVirtualText{Severity}` | Inline virtual diagnostic text.                         |
+| `DiagnosticUnderline{Severity}`   | Underline or undercurl beneath diagnostic ranges.       |
+| `DiagnosticFloating{Severity}`    | Diagnostic text in floating windows.                    |
+
+This config uses undercurls for diagnostic ranges, colored signs, and italic virtual text:
+
+```lua
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { sp = "#db4b4b", undercurl = true })
+vim.api.nvim_set_hl(0, "DiagnosticSignError", { fg = "#db4b4b" })
+vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { fg = "#db4b4b", italic = true })
+```
+
+### LSP
+
+LSP highlight groups cover document references, semantic tokens, inlay hints, code lenses, and
+signature help. Availability depends on the server and client features in use.
+
+| Group                       | What it affects                                             |
+| --------------------------- | ----------------------------------------------------------- |
+| `LspReferenceText`          | Symbol reference under cursor for general text access.      |
+| `LspReferenceRead`          | Symbol reference under cursor for read access.              |
+| `LspReferenceWrite`         | Symbol reference under cursor for write access.             |
+| `LspInlayHint`              | LSP inlay hint text.                                        |
+| `LspCodeLens`               | Code lens virtual text.                                     |
+| `LspCodeLensSeparator`      | Separator between code lens items.                          |
+| `LspSignatureActiveParameter` | Active parameter in signature help.                       |
+| `@lsp.type.*`               | Semantic token type groups, such as `@lsp.type.function`.   |
+| `@lsp.mod.*`                | Semantic token modifier groups, such as `@lsp.mod.readonly`.|
+| `@lsp.typemod.*`            | Combined semantic type/modifier groups.                     |
+
+This config currently customizes the `LspReference*` groups to make the symbol under the cursor more
+visible.
+
+Semantic token examples:
+
+```lua
+vim.api.nvim_set_hl(0, "@lsp.type.function", { fg = "#fabd2f" })
+vim.api.nvim_set_hl(0, "@lsp.mod.deprecated", { strikethrough = true })
+```
+
+### Git Diffs
+
+Git-related groups are used by Neovim diff mode and by plugins such as `gitsigns.nvim`.
+
+| Group              | What it affects                                         |
+| ------------------ | ------------------------------------------------------- |
+| `DiffAdd`          | Added lines in diff views.                              |
+| `DiffChange`       | Changed lines in diff views.                            |
+| `DiffDelete`       | Deleted lines in diff views.                            |
+| `DiffText`         | Changed text inside changed lines.                      |
+| `Added`            | Generic added text group.                               |
+| `Changed`          | Generic changed text group.                             |
+| `Removed`          | Generic removed text group.                             |
+| `GitSignsAdd`      | Added-line sign from `gitsigns.nvim`.                   |
+| `GitSignsChange`   | Changed-line sign from `gitsigns.nvim`.                 |
+| `GitSignsDelete`   | Deleted-line sign from `gitsigns.nvim`.                 |
+| `GitSignsAddNr`    | Line number highlight for added lines.                  |
+| `GitSignsChangeNr` | Line number highlight for changed lines.                |
+| `GitSignsDeleteNr` | Line number highlight for deleted lines.                |
+| `GitSignsAddLn`    | Full-line highlight for added lines.                    |
+| `GitSignsChangeLn` | Full-line highlight for changed lines.                  |
+| `GitSignsDeleteLn` | Full-line highlight for deleted lines.                  |
+
+Example:
+
+```lua
+vim.api.nvim_set_hl(0, "GitSignsAdd", { fg = "#a9b665" })
+vim.api.nvim_set_hl(0, "GitSignsChange", { fg = "#d8a657" })
+vim.api.nvim_set_hl(0, "GitSignsDelete", { fg = "#ea6962" })
+```
+
+### Completion And Popups
+
+These groups are useful when tuning native completion, floating windows, and plugin popups.
+
+| Group           | What it affects                                          |
+| --------------- | -------------------------------------------------------- |
+| `Pmenu`         | Popup menu body.                                         |
+| `PmenuSel`      | Selected popup menu item.                                |
+| `PmenuKind`     | Completion item kind column.                             |
+| `PmenuKindSel`  | Selected completion item kind.                           |
+| `PmenuExtra`    | Extra completion menu text.                              |
+| `PmenuExtraSel` | Selected extra completion menu text.                     |
+| `PmenuSbar`     | Popup menu scrollbar.                                    |
+| `PmenuThumb`    | Popup menu scrollbar thumb.                              |
+| `NormalFloat`   | Normal text in floating windows.                         |
+| `FloatBorder`   | Floating window borders.                                 |
+| `FloatTitle`    | Floating window title.                                   |
+| `FloatFooter`   | Floating window footer.                                  |
+| `PreInsert`     | Preview text inserted by `completeopt=preinsert`.        |
+
+These groups affect more than completion: LSP hover, diagnostic floats, picker popups, and plugin
+windows often link to `NormalFloat` and `FloatBorder`.
+
+### Treesitter And Syntax
+
+Treesitter highlight groups use capture names. They are useful for language-aware customization, but
+exact captures vary by parser and query files.
+
+| Group                  | What it affects                                  |
+| ---------------------- | ------------------------------------------------ |
+| `@variable`            | Variables.                                       |
+| `@variable.parameter`  | Function parameters.                             |
+| `@function`            | Functions.                                       |
+| `@function.method`     | Methods.                                         |
+| `@constructor`         | Constructors.                                    |
+| `@keyword`             | Keywords.                                        |
+| `@keyword.function`    | Function-like keywords.                          |
+| `@string`              | Strings.                                         |
+| `@number`              | Numbers.                                         |
+| `@boolean`             | Booleans.                                        |
+| `@comment`             | Comments.                                        |
+| `@type`                | Types.                                           |
+| `@property`            | Object properties or fields.                     |
+| `@punctuation.delimiter` | Delimiters such as commas and semicolons.      |
+
+Language-specific overrides append the language name:
+
+```lua
+vim.api.nvim_set_hl(0, "@function.lua", { fg = "#fabd2f" })
+vim.api.nvim_set_hl(0, "@keyword.rust", { fg = "#fe8019", italic = true })
+```
+
+### Indent Guides And Scrollbar
+
+Plugin highlight groups are plugin-specific. This config currently customizes Snacks indent guides
+and Satellite's scrollbar.
+
+| Group               | What it affects                                  |
+| ------------------- | ------------------------------------------------ |
+| `SnacksIndent`      | Normal indent guide from `snacks.nvim`.          |
+| `SnacksIndentScope` | Active indent scope from `snacks.nvim`.          |
+| `SatelliteBar`      | Scrollbar bar from `satellite.nvim`.             |
+
+Example from this config:
+
+```lua
+vim.api.nvim_set_hl(0, "SnacksIndent", { fg = "#444444" })
+vim.api.nvim_set_hl(0, "SnacksIndentScope", { fg = "#999999" })
+vim.api.nvim_set_hl(0, "SatelliteBar", { bg = "#4C4846" })
+```
 
 ## Treesitter
 
