@@ -9,7 +9,6 @@ end
 -- Which Key groups
 require("which-key").add({
     { "<leader>f", group = "Find/search" },
-    { "<leader>g", group = "Git" },
     { "<leader>l", group = "LSP" },
     { "<leader>W", group = "Windows" },
 })
@@ -51,15 +50,19 @@ map("n", "<leader>WC", "<C-w>o", "Window close others")
 -- Buffer navigation
 map("n", "<s-tab>", "<cmd>bprev<cr>", "Prev buffer")
 map("n", "<tab>", "<cmd>bnext<cr>", "Next buffer")
-map("n", "<leader>c", "<cmd>bdelete<cr>", "[C]lose buffer")
 map("n", "<leader>w", "<cmd>write<cr>", "[W]rite buffer")
+map("n", "<leader>c", "<cmd>bdelete<cr>", "[C]lose buffer")
+map("n", "<Leader>C", "<cmd>BufferLineCloseOthers<cr>", "[C]lose all other buffers")
 
 -- Pickers and search
 map("n", "<leader>e", function() Snacks.explorer.reveal() end, "Snacks [E]xplorer")
+map("n", "<leader>F", function() Snacks.picker('git_files') end, "[F]ind [F]iles")
 map("n", "<leader>ff", function() Snacks.picker('git_files') end, "[F]ind [F]iles")
 map("n", "<leader>fF", function() Snacks.picker('files') end, "[F]ind all [F]iles")
 map("n", "<leader>fw", function() Snacks.picker('git_grep') end, "[F]ind [w]ords")
 map("n", "<leader>fW", function() Snacks.picker('grep') end, "[F]ind [W]ords in all files")
+map('n', '<leader>fg', function() Snacks.picker("git_status") end, '[F]ind [G]it status')
+map("n", "<leader>fr", function() Snacks.picker('recent') end, "[F]ind [R]ecent files")
 map("n", "<leader>fs", function() Snacks.picker('lsp_symbols') end, "[F]ind buffer [S]ymbols")
 map("n", "<leader>fS", function() Snacks.picker('lsp_workspace_symbols') end, "[F]ind workspace [S]ymbols")
 map("n", "<leader>fd", function() Snacks.picker('diagnostics_buffer') end, "[F]ind buffer [D]iagnostics")
@@ -75,10 +78,20 @@ map("n", "-", function() require("flash").jump() end, "Flash jump")
 map("n", "]q", "<cmd>cnext<cr>", "Next quickfix")
 map("n", "[q", "<cmd>cprev<cr>", "Prev quickfix")
 
+-- Quickfix list: Shift+Enter to open item and immediately close quickfix
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "qf",
+    group = vim.api.nvim_create_augroup("quickfix_mappings", { clear = true }),
+    callback = function(event)
+        vim.keymap.set("n", "<s-cr>", "<cr><cmd>cclose<cr>",
+            { buffer = event.buf, desc = "Open item and close quickfix" })
+    end,
+})
+
 -- Diagnostics
 map("n", "<leader>d", function() vim.diagnostic.open_float({ scope = "line" }) end, "Diagnostic float (current line)")
 map("n", "<leader>D", vim.diagnostic.setqflist, "All diagnostics (quickfix)")
-local diag_current_line = nil
+local diag_current_line = true
 map("n", "<leader>ld", function()
     diag_current_line = not diag_current_line
     vim.diagnostic.config({
@@ -94,19 +107,36 @@ map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, "Next diagnost
 map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, "Prev diagnostic")
 
 -- Git
-local gs = require('gitsigns')
-map('n', '<leader>gs', gs.stage_hunk, 'GitSigns: Stage hunk')
-map('n', '<leader>gr', gs.reset_hunk, 'GitSigns: Reset hunk')
-map('v', '<leader>gs', function() gs.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end,
-    'GitSigns: Stage selected hunk')
-map('v', '<leader>gr', function() gs.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end,
-    'GitSigns: Reset selected hunk')
-map('n', '<leader>gS', gs.stage_buffer, 'GitSigns: Stage buffer')
-map('n', '<leader>gR', gs.reset_buffer, 'GitSigns: Reset buffer')
-map('n', '<leader>gbl', gs.blame_line, 'GitSigns: Blame (line)')
-map('n', '<leader>gbb', gs.blame, 'GitSigns: Blame (buffer)')
-map('n', '<leader>gg', function() Snacks.lazygit.open() end, '[G]it open Lazy[G]it')
-map('n', '<leader>gG', function() Snacks.picker("git_status") end, '[G]it open Snacks [G]it status')
+local gs = require("gitsigns")
+require("which-key").add({
+    { "<leader>g",  group = "[G]it" },
+    { "<leader>gb", group = "[G]it [B]lame" },
+    { "<leader>gd", group = "[G]it [D]iffview" },
+    { "<leader>gl", group = "[G]it [L]og" },
+})
+map("n", "<leader>gs", gs.stage_hunk, "[G]it [S]tage hunk")
+map("n", "<leader>gr", gs.reset_hunk, "[G]it [R]eset hunk")
+map("v", "<leader>gs", function() gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") }) end,
+    "[G]it [S]tage selected hunk")
+map("v", "<leader>gr", function() gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") }) end,
+    "[G]it [R]eset selected hunk")
+map("n", "<leader>gS", gs.stage_buffer, "[G]it [S]tage buffer")
+map("n", "<leader>gR", gs.reset_buffer, "[G]it [R]eset buffer")
+map("n", "<leader>gbl", gs.blame_line, "[G]it [B]lame [L]ine")
+map("n", "<leader>gbb", gs.blame, "[G]it [B]lame [B]uffer")
+map("n", "<leader>gG", function() Snacks.lazygit.open() end, "[G]it Lazy[G]it")
+map("n", "<leader>gg", function() Snacks.picker("git_status") end, "[G]it Snacks [G]it status")
+map("n", "<leader>gdd", "<cmd>DiffviewOpen<cr>", "[G]it [D]iffview open")
+map("n", "<leader>gdh", "<cmd>DiffviewFileHistory %<cr>", "[G]it [D]iffview [H]istory for current file")
+map("v", "<leader>gdh", "<cmd>DiffviewFileHistory<cr>", "[G]it [D]iffview [H]istory for selection")
+map("n", "<leader>gdH", "<cmd>DiffviewFileHistory<cr>", "[G]it [D]iffview [H]istory for all files")
+map("n", "<leader>gdc", "<cmd>DiffviewClose<cr>", "[G]it [D]iffview [C]lose")
+map("n", "<leader>gll", function() Snacks.picker("git_log") end, "[G]it [L]og")
+map("n", "<leader>glf", function() Snacks.picker("git_log_file") end, "[G]it [L]og current [F]ile")
+map("n", "<leader>gll", function() Snacks.picker("git_log_line") end, "[G]it [L]og current [L]ine")
+map("v", "<leader>gll", function() Snacks.picker("git_log_line") end, "[G]it [L]og current [L]ine")
+-- TODO: Add commands for native diffsplit, diffthis, diffoff
+-- TODO: Change commands for ]c, ]d, etc
 
 -- Native autocomplete popup navigation
 vim.keymap.set("i", "<C-j>", function()
@@ -117,7 +147,23 @@ vim.keymap.set("i", "<C-j>", function()
     end
 end, { silent = true, desc = "Completion next (Ctrl-j)" })
 
+vim.keymap.set("i", "<tab>", function()
+    if vim.fn.pumvisible() == 1 then
+        feed("<C-n>")
+    else
+        feed("<C-j>")
+    end
+end, { silent = true, desc = "Completion next (Ctrl-j)" })
+
 vim.keymap.set("i", "<C-k>", function()
+    if vim.fn.pumvisible() == 1 then
+        feed("<C-p>")
+    else
+        feed("<C-k>")
+    end
+end, { silent = true, desc = "Completion prev (Ctrl-k)" })
+
+vim.keymap.set("i", "<s-tab>", function()
     if vim.fn.pumvisible() == 1 then
         feed("<C-p>")
     else
@@ -148,7 +194,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
         bmap("n", "K", vim.lsp.buf.hover, "Hover docs")
         bmap("n", "gh", vim.lsp.buf.hover, "Hover docs")
-        bmap("n", "<leader>h", vim.lsp.buf.hover, "Hover docs")
+        bmap("n", "<leader>h", vim.lsp.buf.hover, "[H]over docs")
         bmap("n", "gr", vim.lsp.buf.rename, "[G]o [R]ename symbol")
         bmap("n", "<leader>r", vim.lsp.buf.rename, "[R]ename symbol")
         bmap("n", "ga", vim.lsp.buf.code_action, "[G]o code [A]ction")

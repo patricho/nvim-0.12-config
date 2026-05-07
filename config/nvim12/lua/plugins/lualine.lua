@@ -6,7 +6,13 @@ local function lsp_client_name()
         return ""
     end
 
-    return clients[1].name
+    local client_names = {}
+
+    for _, client in ipairs(clients) do
+        table.insert(client_names, client.name)
+    end
+
+    return table.concat(client_names, " ")
 end
 
 local function truncate_commit_summary(summary)
@@ -53,23 +59,26 @@ local function recording_register()
     return "@" .. reg
 end
 
+local function showcmd()
+    return vim.api.nvim_eval_statusline("%S", {}).str
+end
+
 local function has_cmd_info()
     return vim.o.cmdheight == 0
 end
 
 require("lualine").setup({
     options = {
-        theme = "gruvbox",
-        component_separators = { left = '', right = '', color = { fg = 'green' } },
-        section_separators = { left = '', right = '' },
+        -- https://github.com/nvim-lualine/lualine.nvim/blob/master/THEMES.md
+        theme = "nightfly",
+        component_separators = { left = "", right = "" },
+        section_separators = { left = "", right = "" },
     },
     sections = {
         lualine_a = { "mode" },
         lualine_b = { "branch", "diff", "diagnostics" },
         lualine_c = {
-            {
-                "filename",
-            },
+            "filename",
             {
                 "searchcount",
                 cond = has_cmd_info,
@@ -86,24 +95,23 @@ require("lualine").setup({
                 color = { fg = "#fe8019" },
             },
             {
-                "showcmd",
+                showcmd,
                 cond = has_cmd_info,
                 icon = "",
-                color = { fg = "#d4be98", bg = "#3c3836" },
+                color = { fg = "#ffffff" },
             },
         },
         lualine_x = {
             {
                 current_line_blame,
-                icon = "",
+                icon = "",
+                color = { fg = "#777777" },
             },
             {
                 lsp_client_name,
                 icon = "",
                 color = { fg = "#7daea3" },
             },
-            -- "encoding",
-            "fileformat",
             "filetype",
         },
         lualine_y = { "progress" },

@@ -6,9 +6,11 @@
 -- 2. config/lsp/<name>.lua       (your overrides, merged on top)
 
 vim.lsp.enable({
+    "golangci_lint_ls",
     "gopls",
     "lua_ls",
     "omnisharp",
+    "phpactor",
     "rust_analyzer",
     "ts_ls",
 })
@@ -24,14 +26,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
         if client:supports_method("textDocument/completion") then
             vim.lsp.completion.enable(true, client.id, buf, { autotrigger = true })
         end
-
-        -- Format buffer on save
-        vim.api.nvim_create_autocmd("BufWritePre", {
-            buffer = buf,
-            callback = function()
-                vim.lsp.buf.format({ bufnr = buf, async = false })
-            end,
-        })
 
         -- Highlight symbol references under the cursor
         if client:supports_method("textDocument/documentHighlight", buf) then

@@ -5,9 +5,10 @@ vim.opt.breakindent    = true -- Wrapped-line indent
 vim.opt.clipboard      = "unnamedplus" -- System clipboard
 vim.opt.cmdheight      = 0 -- Command line height
 vim.opt.complete       = "o,.,i" -- Completion sources
-vim.opt.completeopt    = "menu,menuone,noinsert,noselect,popup" -- Completion menu
+vim.opt.completeopt    = "menu,menuone,noinsert,noselect,popup,fuzzy" -- Completion menu
 vim.opt.cursorline     = true -- Cursor line
 vim.opt.expandtab      = true -- Spaces for tabs
+vim.opt.fillchars      = { diff = "╱" }
 vim.opt.guicursor      = "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50" -- Cursor shape
 vim.opt.hlsearch       = true -- Search highlights
 vim.opt.ignorecase     = true -- Case-insensitive search
@@ -19,8 +20,6 @@ vim.opt.number         = true -- Line numbers
 vim.opt.relativenumber = true -- Relative numbers
 vim.opt.scrolloff      = 8 -- Vertical padding
 vim.opt.shiftwidth     = 4 -- Indent width
-vim.opt.showmode       = false -- Mode text
-vim.opt.sidescrolloff  = 8 -- Horizontal padding
 vim.opt.signcolumn     = "yes" -- Sign gutter
 vim.opt.smartcase      = true -- Uppercase-sensitive search
 vim.opt.smartindent    = true -- Smart indent
@@ -43,6 +42,7 @@ vim.opt.inccommand = "split" -- Substitution preview
 -- Diagnostics
 vim.diagnostic.config({
     virtual_text = {
+        current_line = true,
         source = "if_many",
         prefix = "●",
         spacing = 20,
@@ -62,4 +62,10 @@ vim.diagnostic.config({
         border = "rounded",
         source = true,
     },
+})
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+    callback = function()
+        (vim.hl or vim.highlight).on_yank({ higroup = "YankHighlight", timeout = 2000 })
+    end,
 })

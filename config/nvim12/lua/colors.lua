@@ -23,6 +23,9 @@ vim.api.nvim_set_hl(0, "DiagnosticVirtualTextWarn", { fg = "#ee8019", italic = t
 -- Selection
 vim.api.nvim_set_hl(0, "Visual", { bg = "#662200" })
 
+-- Yank
+vim.api.nvim_set_hl(0, "YankHighlight", { fg = "#fe8019", bg = "#500f08" })
+
 -- Bracket/parentheses pair matching
 vim.api.nvim_set_hl(0, "MatchParen", { fg = "#fe8019" })
 
@@ -42,3 +45,17 @@ vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { fg = "#fe8019", bold = true, un
 
 -- Scrollbar
 vim.api.nvim_set_hl(0, "SatelliteBar", { bg = "#4C4846" })
+
+-- Dropbar breadcrumbs
+vim.api.nvim_set_hl(0, "WinBar", { fg = "#9D8761", bold = false })
+vim.api.nvim_set_hl(0, "DropBarKindFile", { bold = true })
+
+-- Bufferline
+vim.api.nvim_set_hl(0, "BufferLineSeparator", { fg = "#444444", bg = "#1e1e1e" })
+vim.api.nvim_set_hl(0, "BufferLineIndicatorSelected", { fg = "#444444", bg = "#282828" })
+
+-- Git diff
+vim.api.nvim_set_hl(0, "DiffAdd", { bg = "#0f4412" })
+vim.api.nvim_set_hl(0, "DiffDelete", { fg = "#962623" })
+vim.api.nvim_set_hl(0, "DiffText", { bg = "#466570" })
+vim.api.nvim_set_hl(0, "DiffChange", { bg = "#25343c" })

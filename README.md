@@ -88,7 +88,7 @@ Your existing `nvim` command continues to launch 0.10 as before. `nvim12` launch
 0.12 environment.
 
 Plugins are auto-installed on first launch via `vim.pack.add()` (Neovim 0.12's built-in package
-manager).
+manager). Packages are stored under XDG_DATA_HOME.
 
 ## Project layout
 
@@ -136,6 +136,176 @@ needed.
 | [gruvbox-material](https://github.com/sainnhe/gruvbox-material)       | Color scheme                                       |
 | [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)          | Status line                                        |
 | [bufferline.nvim](https://github.com/akinsho/bufferline.nvim)         | Buffer tab line                                    |
+
+## Built-in Diff Mode Quickstart
+
+This config also installs `diffview.nvim`, but that plugin builds on Neovim's built-in diff mode rather
+than replacing it. If a plugin mentions commands like `]c`, `[c`, `:diffget`, or `:diffput`, it is
+talking about native diff-mode features documented in `:help diff`.
+
+### Fast start
+
+Open two or more files directly in diff mode:
+
+```bash
+nvim -d file1 file2
+nvim -d file1 file2 file3
+```
+
+Use horizontal splits instead:
+
+```bash
+nvim -d -o file1 file2
+```
+
+You can also enter diff mode from inside Neovim:
+
+| Command                      | What it does                                                         |
+| ---------------------------- | -------------------------------------------------------------------- |
+| `:diffsplit {file}`          | Open `{file}` in a new split and diff it against the current window. |
+| `:vertical diffsplit {file}` | Same, but force a vertical split.                                    |
+| `:diffthis`                  | Mark the current window as part of the current diff session.         |
+| `:diffoff`                   | Turn off diff mode in the current window.                            |
+| `:diffoff!`                  | Turn off diff mode for all diff windows in the current tab.          |
+| `:diffupdate`                | Recompute diff hunks and diff folds after edits.                     |
+
+### What diff mode changes
+
+When a window is in diff mode, Neovim enables several window-local behaviors automatically:
+
+| Setting           | Effect                                                   |
+| ----------------- | -------------------------------------------------------- |
+| `diff`            | Marks the window as participating in a diff.             |
+| `scrollbind`      | Keeps diff windows scrolling together.                   |
+| `cursorbind`      | Keeps cursor position synchronized between diff windows. |
+| `foldmethod=diff` | Folds unchanged regions so changes stand out.            |
+| `wrap` off        | Avoids wrapped lines breaking visual alignment.          |
+
+Diffs are local to the current tab page. You can have one diff session in one tab and a different one in
+another.
+
+### Core workflow
+
+1. Open the files with `nvim -d ...` or `:diffsplit`.
+2. Jump between changed hunks with `]c` and `[c`.
+3. Inspect the highlighted lines and any diff folds.
+4. Pull a hunk from another buffer with `do` / `:diffget`, or push your current hunk with `dp` /
+   `:diffput`.
+5. Run `:diffupdate` if you made edits and the highlighting no longer matches what you expect.
+6. Exit with `:diffoff` when you are done.
+
+### Navigation
+
+These are the main built-in motions for moving between hunks:
+
+| Command | Meaning                         |
+| ------- | ------------------------------- |
+| `]c`    | Jump to the next diff hunk.     |
+| `[c`    | Jump to the previous diff hunk. |
+| `3]c`   | Jump forward three hunks.       |
+| `2[c`   | Jump backward two hunks.        |
+
+These commands jump to the start of each change. They work only when the current window is in diff mode.
+
+### Copying changes between diff buffers
+
+This is the feature many Git diff plugins rely on. Neovim can copy the current hunk, or a specified line
+range, from one diff buffer to another.
+
+| Command                    | Meaning                                                                            |
+| -------------------------- | ---------------------------------------------------------------------------------- |
+| `do`                       | `:diffget` for the hunk under the cursor. Think "obtain from the other side".      |
+| `dp`                       | `:diffput` for the hunk under the cursor. Push the current hunk to the other side. |
+| `:diffget`                 | Copy the matching change from another diff buffer into the current buffer.         |
+| `:diffput`                 | Copy the current change into another diff buffer.                                  |
+| `:2,8diffget`              | Get only the change intersecting lines 2 through 8.                                |
+| `:diffget 3`               | Get from buffer number `3`.                                                        |
+| `:diffput other-file-name` | Put into the diff buffer whose name matches that text.                             |
+
+Rules worth knowing:
+
+| Case                       | Behavior                                                                                      |
+| -------------------------- | --------------------------------------------------------------------------------------------- |
+| No range given             | Neovim uses the hunk under the cursor, or just above it.                                      |
+| More than two diff buffers | `:diffget` / `:diffput` may need a buffer specifier.                                          |
+| Deleted lines              | You cannot place the cursor on filler lines; use `:diffget` on the line below them.           |
+| Visual mode                | `do` and `dp` do not work from Visual mode. Use `:diffget` / `:diffput` with a range instead. |
+
+### Updating and reading the display
+
+The display itself communicates a lot:
+
+| Highlight group | Meaning                                         |
+| --------------- | ----------------------------------------------- |
+| `DiffAdd`       | Lines present here but not in the other buffer. |
+| `DiffChange`    | Lines that changed.                             |
+| `DiffText`      | Changed text inside a changed line.             |
+| `DiffDelete`    | Deleted lines shown as filler.                  |
+
+Important display concepts:
+
+| Concept      | Summary                                                                                                 |
+| ------------ | ------------------------------------------------------------------------------------------------------- |
+| Filler lines | Placeholder lines that keep windows vertically aligned when one side has inserted or deleted text.      |
+| Diff folds   | Unchanged sections are folded so you can focus on edits. Open them with normal fold commands if needed. |
+| Alignment    | Works best when `wrap` is off, folds are in the same state, and `scrollbind` stays enabled.             |
+
+If the diff view looks stale after non-trivial edits, run `:diffupdate`.
+
+### Useful options and concepts
+
+Most day-to-day tuning happens through `diffopt`:
+
+| Setting                    | Effect                                                         |
+| -------------------------- | -------------------------------------------------------------- |
+| `:set diffopt+=vertical`   | Prefer vertical splits for diff windows.                       |
+| `:set diffopt+=horizontal` | Prefer horizontal splits.                                      |
+| `:set diffopt+=filler`     | Show filler lines so both sides stay aligned.                  |
+| `:set diffopt-=filler`     | Hide filler lines, which can make alignment harder to read.    |
+| `:set diffopt+=context:3`  | Keep 3 lines of unchanged context visible around each hunk.    |
+| `:set diffopt+=followwrap` | Keep existing wrapping behavior instead of forcing `wrap` off. |
+
+Advanced concepts from the help page:
+
+| Concept       | When to care                                                                                        |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| `diffanchors` | Helpful when code moved and changed at the same time, and the default hunk alignment is misleading. |
+| `diffexpr`    | Lets Neovim call a custom diff command instead of the built-in diff engine.                         |
+| `patchexpr`   | Lets `:diffpatch` use a custom patch application command.                                           |
+
+### Compare current buffer with the saved file
+
+This built-in user-command pattern from `:help diff` is handy when you want to review your unsaved edits
+against the version on disk:
+
+```vim
+command DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_ |
+      \ diffthis | wincmd p | diffthis
+```
+
+After defining it, run `:DiffOrig` to compare the current buffer with the file as it was last loaded.
+
+### Quick wizard
+
+Use this as a memory aid the first few times:
+
+1. Want to compare two files now: `nvim -d a b`
+2. Already editing one file: `:vertical diffsplit other-file`
+3. Move between changes: `]c` and `[c`
+4. Take the other version's hunk: `do`
+5. Push your version to the other side: `dp`
+6. Edited manually and highlights look wrong: `:diffupdate`
+7. Finished comparing: `:diffoff`
+
+Main help topics:
+
+| Help tag             | What it covers                          |
+| -------------------- | --------------------------------------- |
+| `:help diff`         | Full built-in diff documentation.       |
+| `:help diff-mode`    | Overview of diff mode behavior.         |
+| `:help jumpto-diffs` | `]c` and `[c`.                          |
+| `:help copy-diffs`   | `:diffget`, `:diffput`, `do`, and `dp`. |
+| `:help diffopt`      | Diff display and algorithm options.     |
 
 ## Option Reference
 
@@ -304,7 +474,7 @@ completion sources; that is `complete`.
 This config uses:
 
 ```lua
-vim.opt.completeopt = "menu,menuone,noinsert,popup,preview"
+vim.opt.completeopt = "menu,menuone,noinsert,noselect,popup,fuzzy"
 ```
 
 Supported values:
@@ -329,7 +499,99 @@ enabled. Only `fuzzy`, `longest`, `popup`, `preinsert`, `preselect`, and `previe
 while `autocomplete` is active.
 
 The configured value means: show a menu, show it even for a single item, do not insert text until a
-selection is made, and show completion documentation/details in a popup window.
+selection is made, show completion documentation/details in a popup window, and allow fuzzy matching.
+
+For native autocomplete, `fuzzy` also helps with case-mismatch lookups such as typing `findby` and
+still matching `findByUser`.
+
+### Native autocomplete commands
+
+This config enables Neovim 0.12's built-in insert-mode autocomplete:
+
+```lua
+vim.opt.autocomplete = true
+```
+
+Useful insert-mode commands:
+
+| Command | Meaning |
+| ------- | ------- |
+| `<C-n>` | Show the completion menu manually and move to the next match. |
+| `<C-p>` | Show the completion menu manually and move to the previous match. |
+| `<C-e>` | Hide the completion menu. |
+
+So if you want to force completion to appear in Insert mode, use `<C-n>` or `<C-p>`. In this config,
+`<C-j>` and `<C-k>` are also wired to those same popup-navigation commands when the completion menu is
+already visible.
+
+### PHP completion note
+
+PHP completion in this config comes from `phpactor` over Neovim's built-in LSP completion. One Phpactor
+setting matters for member completion on variables:
+
+```lua
+init_options = {
+    ["language_server_completion.trim_leading_dollar"] = true,
+}
+```
+
+That makes Phpactor ignore the leading `$` when completing PHP variables, which helps avoid malformed
+variable completion contexts such as the documented "double dollar" issue. It does not add full
+case-insensitive member matching by itself; if typing `findby` still does not suggest `findByUser`, that
+behavior is most likely limited by Phpactor's member-completion filtering rather than Neovim's popup UI.
+
+### `fillchars`
+
+`fillchars` controls the characters Neovim uses for UI filler elements such as split separators,
+fold markers, diff filler, end-of-buffer lines, and truncation markers.
+
+It is a comma-separated list of `name:value` pairs. This config uses:
+
+```lua
+vim.opt.fillchars = {
+    diff = "╱",
+    eob = " ",
+}
+```
+
+That means deleted diff filler lines use `╱` instead of `-`, and the usual `~` markers at the end
+of a buffer are hidden by replacing them with spaces.
+
+Common `fillchars` items:
+
+| Item        | Default    | Used for                                                            |
+| ----------- | ---------- | ------------------------------------------------------------------- | ---------------------------------------------- |
+| `stl`       | space      | Statusline of the current window.                                   |
+| `stlnc`     | space      | Statusline of non-current windows.                                  |
+| `wbr`       | space      | Window bar.                                                         |
+| `horiz`     | `─` or `-` | Horizontal split separators.                                        |
+| `horizup`   | `┴` or `-` | Upward-facing horizontal separator intersections.                   |
+| `horizdown` | `┬` or `-` | Downward-facing horizontal separator intersections.                 |
+| `vert`      | `│` or `   | `                                                                   | Vertical split separators.                     |
+| `vertleft`  | `┤` or `   | `                                                                   | Left-facing vertical separator intersections.  |
+| `vertright` | `├` or `   | `                                                                   | Right-facing vertical separator intersections. |
+| `verthoriz` | `┼` or `+` | Crossings between horizontal and vertical separators.               |
+| `fold`      | `·` or `-` | Fill character inside folded text.                                  |
+| `foldopen`  | `-`        | Marker for an open fold.                                            |
+| `foldclose` | `+`        | Marker for a closed fold.                                           |
+| `foldsep`   | `│` or `   | `                                                                   | Separator used inside open folds.              |
+| `foldinner` | none       | Replacement for repeated fold levels in narrow fold columns.        |
+| `diff`      | `-`        | Deleted filler lines in diff mode.                                  |
+| `msgsep`    | space      | Message separator when `display+=msgsep` is active.                 |
+| `eob`       | `~`        | Empty lines after the end of a buffer.                              |
+| `lastline`  | `@`        | Marker for truncated last lines when `display` includes `lastline`. |
+| `trunc`     | `>`        | Truncated text in the insert completion menu.                       |
+| `truncrl`   | `<`        | Right-to-left equivalent of `trunc`.                                |
+
+Any item you omit falls back to Neovim's default.
+
+Two details are easy to miss:
+
+1. The separator variants `horiz`, `horizup`, `horizdown`, `vertleft`, `vertright`, and
+   `verthoriz` are mainly relevant when `laststatus=3`, because otherwise Neovim mostly shows plain
+   vertical window separators.
+2. If `ambiwidth=double`, Neovim falls back to single-byte alternatives for several box-drawing
+   characters so the UI stays aligned.
 
 ### `statusline`
 
@@ -372,9 +634,30 @@ Common statusline items:
 | `%v` | Current virtual/screen column.                           |
 | `%p` | Percentage through file by line.                         |
 | `%P` | Percentage through the displayed window.                 |
+| `%S` | `showcmd` content for a pending Normal-mode command.     |
 | `%=` | Split left and right aligned sections.                   |
 | `%<` | Mark where truncation should happen if space is limited. |
 | `%%` | Literal percent sign.                                    |
+
+Example:
+
+```text
+%f %m%r %= %p%% %l:%c
+```
+
+That shows the file path and file flags on the left, then right-aligns the cursor position and file
+progress.
+
+`%S` is only non-empty while `showcmd` has something to display, such as an incomplete operator or
+count like `d`, `2d`, or `g`. With `showcmdloc=statusline`, Neovim's built-in statusline can show
+that value there.
+
+Lualine note:
+
+Lualine has its own built-in components such as `filename`, `progress`, and `location`, but it also
+supports raw Vim statusline items and custom Lua components. In practice, using a small Lua wrapper
+around `vim.api.nvim_eval_statusline()` can be more explicit when you want a single native item like
+`%S`.
 
 Expressions are also supported:
 
@@ -460,18 +743,18 @@ vim.api.nvim_set_hl(0, "GroupName", { fg = "#ffffff", bg = "#000000", bold = tru
 
 Common attributes:
 
-| Attribute       | Meaning                                                    |
-| --------------- | ---------------------------------------------------------- |
-| `fg`            | Foreground/text color.                                     |
-| `bg`            | Background color.                                          |
-| `sp`            | Special color used by undercurl/underline styles.          |
-| `bold`          | Bold text.                                                 |
-| `italic`        | Italic text.                                               |
-| `underline`     | Straight underline.                                        |
-| `undercurl`     | Curly underline, often used for diagnostics.               |
-| `strikethrough` | Strikethrough text.                                        |
-| `reverse`       | Swap foreground and background.                            |
-| `link`          | Link this group to another highlight group.                |
+| Attribute       | Meaning                                           |
+| --------------- | ------------------------------------------------- |
+| `fg`            | Foreground/text color.                            |
+| `bg`            | Background color.                                 |
+| `sp`            | Special color used by undercurl/underline styles. |
+| `bold`          | Bold text.                                        |
+| `italic`        | Italic text.                                      |
+| `underline`     | Straight underline.                               |
+| `undercurl`     | Curly underline, often used for diagnostics.      |
+| `strikethrough` | Strikethrough text.                               |
+| `reverse`       | Swap foreground and background.                   |
+| `link`          | Link this group to another highlight group.       |
 
 Example link:
 
@@ -483,20 +766,20 @@ vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { link = "DiagnosticError" 
 
 These groups control the cursor, current line, line numbers, and related editor chrome.
 
-| Group              | What it affects                                                   |
-| ------------------ | ----------------------------------------------------------------- |
-| `Cursor`           | Normal cursor color when controlled by Neovim.                    |
-| `lCursor`          | Cursor color when language mappings are active.                   |
-| `CursorIM`         | Cursor color in Input Method mode.                                |
-| `TermCursor`       | Cursor in terminal buffers.                                       |
-| `TermCursorNC`     | Terminal cursor when the terminal window is not focused.          |
-| `CursorLine`       | Background for the current screen line.                           |
-| `CursorColumn`     | Background for the current screen column.                         |
-| `LineNr`           | Line numbers.                                                     |
-| `CursorLineNr`     | Line number for the current line.                                 |
-| `SignColumn`       | Sign column background.                                           |
-| `FoldColumn`       | Fold column.                                                      |
-| `ColorColumn`      | Columns marked by `colorcolumn`.                                  |
+| Group          | What it affects                                          |
+| -------------- | -------------------------------------------------------- |
+| `Cursor`       | Normal cursor color when controlled by Neovim.           |
+| `lCursor`      | Cursor color when language mappings are active.          |
+| `CursorIM`     | Cursor color in Input Method mode.                       |
+| `TermCursor`   | Cursor in terminal buffers.                              |
+| `TermCursorNC` | Terminal cursor when the terminal window is not focused. |
+| `CursorLine`   | Background for the current screen line.                  |
+| `CursorColumn` | Background for the current screen column.                |
+| `LineNr`       | Line numbers.                                            |
+| `CursorLineNr` | Line number for the current line.                        |
+| `SignColumn`   | Sign column background.                                  |
+| `FoldColumn`   | Fold column.                                             |
+| `ColorColumn`  | Columns marked by `colorcolumn`.                         |
 
 Cursor shape is controlled by `guicursor`; these highlight groups only control cursor colors when the
 terminal or UI supports it.
@@ -512,16 +795,16 @@ vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#fabd2f", bold = true })
 
 These groups are useful for selections, matched brackets, and highlighted words.
 
-| Group                   | What it affects                                      |
-| ----------------------- | ---------------------------------------------------- |
-| `Visual`                | Visual mode selection.                               |
-| `VisualNOS`             | Visual selection when Neovim is not owning selection.|
-| `MatchParen`            | Matching bracket, parenthesis, or brace.             |
-| `MiniCursorword`        | Other occurrences of word under cursor.              |
-| `MiniCursorwordCurrent` | Current word under cursor from `mini.cursorword`.    |
-| `IlluminatedWordText`   | Text references from illumination-style plugins.     |
-| `IlluminatedWordRead`   | Read references from illumination-style plugins.     |
-| `IlluminatedWordWrite`  | Write references from illumination-style plugins.    |
+| Group                   | What it affects                                       |
+| ----------------------- | ----------------------------------------------------- |
+| `Visual`                | Visual mode selection.                                |
+| `VisualNOS`             | Visual selection when Neovim is not owning selection. |
+| `MatchParen`            | Matching bracket, parenthesis, or brace.              |
+| `MiniCursorword`        | Other occurrences of word under cursor.               |
+| `MiniCursorwordCurrent` | Current word under cursor from `mini.cursorword`.     |
+| `IlluminatedWordText`   | Text references from illumination-style plugins.      |
+| `IlluminatedWordRead`   | Read references from illumination-style plugins.      |
+| `IlluminatedWordWrite`  | Write references from illumination-style plugins.     |
 
 This config currently customizes `Visual`, `MatchParen`, `MiniCursorword`,
 `MiniCursorwordCurrent`, and the `IlluminatedWord*` groups.
@@ -530,12 +813,12 @@ This config currently customizes `Visual`, `MatchParen`, `MiniCursorword`,
 
 Search highlighting is separate from LSP references and cursor-word highlighting.
 
-| Group        | What it affects                                                |
-| ------------ | -------------------------------------------------------------- |
-| `Search`     | Search matches from `/`, `?`, and `hlsearch`.                  |
-| `CurSearch`  | Current search match.                                          |
-| `IncSearch`  | Incremental search match while typing a search.                |
-| `Substitute` | Replacement preview during `:substitute` with `inccommand`.    |
+| Group        | What it affects                                             |
+| ------------ | ----------------------------------------------------------- |
+| `Search`     | Search matches from `/`, `?`, and `hlsearch`.               |
+| `CurSearch`  | Current search match.                                       |
+| `IncSearch`  | Incremental search match while typing a search.             |
+| `Substitute` | Replacement preview during `:substitute` with `inccommand`. |
 
 Example:
 
@@ -549,17 +832,17 @@ vim.api.nvim_set_hl(0, "CurSearch", { fg = "#1d2021", bg = "#fe8019", bold = tru
 Diagnostics use several groups per severity. The severity suffixes are `Error`, `Warn`, `Info`,
 `Hint`, and sometimes `Ok`.
 
-| Group pattern                 | What it affects                                            |
-| ----------------------------- | ---------------------------------------------------------- |
-| `DiagnosticError`             | Base diagnostic color for errors.                          |
-| `DiagnosticWarn`              | Base diagnostic color for warnings.                        |
-| `DiagnosticInfo`              | Base diagnostic color for informational diagnostics.        |
-| `DiagnosticHint`              | Base diagnostic color for hints.                           |
-| `DiagnosticOk`                | Base diagnostic color for OK/success diagnostics.          |
-| `DiagnosticSign{Severity}`    | Sign column diagnostic marker.                             |
-| `DiagnosticVirtualText{Severity}` | Inline virtual diagnostic text.                         |
-| `DiagnosticUnderline{Severity}`   | Underline or undercurl beneath diagnostic ranges.       |
-| `DiagnosticFloating{Severity}`    | Diagnostic text in floating windows.                    |
+| Group pattern                     | What it affects                                      |
+| --------------------------------- | ---------------------------------------------------- |
+| `DiagnosticError`                 | Base diagnostic color for errors.                    |
+| `DiagnosticWarn`                  | Base diagnostic color for warnings.                  |
+| `DiagnosticInfo`                  | Base diagnostic color for informational diagnostics. |
+| `DiagnosticHint`                  | Base diagnostic color for hints.                     |
+| `DiagnosticOk`                    | Base diagnostic color for OK/success diagnostics.    |
+| `DiagnosticSign{Severity}`        | Sign column diagnostic marker.                       |
+| `DiagnosticVirtualText{Severity}` | Inline virtual diagnostic text.                      |
+| `DiagnosticUnderline{Severity}`   | Underline or undercurl beneath diagnostic ranges.    |
+| `DiagnosticFloating{Severity}`    | Diagnostic text in floating windows.                 |
 
 This config uses undercurls for diagnostic ranges, colored signs, and italic virtual text:
 
@@ -574,18 +857,18 @@ vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { fg = "#db4b4b", italic = 
 LSP highlight groups cover document references, semantic tokens, inlay hints, code lenses, and
 signature help. Availability depends on the server and client features in use.
 
-| Group                       | What it affects                                             |
-| --------------------------- | ----------------------------------------------------------- |
-| `LspReferenceText`          | Symbol reference under cursor for general text access.      |
-| `LspReferenceRead`          | Symbol reference under cursor for read access.              |
-| `LspReferenceWrite`         | Symbol reference under cursor for write access.             |
-| `LspInlayHint`              | LSP inlay hint text.                                        |
-| `LspCodeLens`               | Code lens virtual text.                                     |
-| `LspCodeLensSeparator`      | Separator between code lens items.                          |
-| `LspSignatureActiveParameter` | Active parameter in signature help.                       |
-| `@lsp.type.*`               | Semantic token type groups, such as `@lsp.type.function`.   |
-| `@lsp.mod.*`                | Semantic token modifier groups, such as `@lsp.mod.readonly`.|
-| `@lsp.typemod.*`            | Combined semantic type/modifier groups.                     |
+| Group                         | What it affects                                              |
+| ----------------------------- | ------------------------------------------------------------ |
+| `LspReferenceText`            | Symbol reference under cursor for general text access.       |
+| `LspReferenceRead`            | Symbol reference under cursor for read access.               |
+| `LspReferenceWrite`           | Symbol reference under cursor for write access.              |
+| `LspInlayHint`                | LSP inlay hint text.                                         |
+| `LspCodeLens`                 | Code lens virtual text.                                      |
+| `LspCodeLensSeparator`        | Separator between code lens items.                           |
+| `LspSignatureActiveParameter` | Active parameter in signature help.                          |
+| `@lsp.type.*`                 | Semantic token type groups, such as `@lsp.type.function`.    |
+| `@lsp.mod.*`                  | Semantic token modifier groups, such as `@lsp.mod.readonly`. |
+| `@lsp.typemod.*`              | Combined semantic type/modifier groups.                      |
 
 This config currently customizes the `LspReference*` groups to make the symbol under the cursor more
 visible.
@@ -601,24 +884,24 @@ vim.api.nvim_set_hl(0, "@lsp.mod.deprecated", { strikethrough = true })
 
 Git-related groups are used by Neovim diff mode and by plugins such as `gitsigns.nvim`.
 
-| Group              | What it affects                                         |
-| ------------------ | ------------------------------------------------------- |
-| `DiffAdd`          | Added lines in diff views.                              |
-| `DiffChange`       | Changed lines in diff views.                            |
-| `DiffDelete`       | Deleted lines in diff views.                            |
-| `DiffText`         | Changed text inside changed lines.                      |
-| `Added`            | Generic added text group.                               |
-| `Changed`          | Generic changed text group.                             |
-| `Removed`          | Generic removed text group.                             |
-| `GitSignsAdd`      | Added-line sign from `gitsigns.nvim`.                   |
-| `GitSignsChange`   | Changed-line sign from `gitsigns.nvim`.                 |
-| `GitSignsDelete`   | Deleted-line sign from `gitsigns.nvim`.                 |
-| `GitSignsAddNr`    | Line number highlight for added lines.                  |
-| `GitSignsChangeNr` | Line number highlight for changed lines.                |
-| `GitSignsDeleteNr` | Line number highlight for deleted lines.                |
-| `GitSignsAddLn`    | Full-line highlight for added lines.                    |
-| `GitSignsChangeLn` | Full-line highlight for changed lines.                  |
-| `GitSignsDeleteLn` | Full-line highlight for deleted lines.                  |
+| Group              | What it affects                          |
+| ------------------ | ---------------------------------------- |
+| `DiffAdd`          | Added lines in diff views.               |
+| `DiffChange`       | Changed lines in diff views.             |
+| `DiffDelete`       | Deleted lines in diff views.             |
+| `DiffText`         | Changed text inside changed lines.       |
+| `Added`            | Generic added text group.                |
+| `Changed`          | Generic changed text group.              |
+| `Removed`          | Generic removed text group.              |
+| `GitSignsAdd`      | Added-line sign from `gitsigns.nvim`.    |
+| `GitSignsChange`   | Changed-line sign from `gitsigns.nvim`.  |
+| `GitSignsDelete`   | Deleted-line sign from `gitsigns.nvim`.  |
+| `GitSignsAddNr`    | Line number highlight for added lines.   |
+| `GitSignsChangeNr` | Line number highlight for changed lines. |
+| `GitSignsDeleteNr` | Line number highlight for deleted lines. |
+| `GitSignsAddLn`    | Full-line highlight for added lines.     |
+| `GitSignsChangeLn` | Full-line highlight for changed lines.   |
+| `GitSignsDeleteLn` | Full-line highlight for deleted lines.   |
 
 Example:
 
@@ -632,21 +915,21 @@ vim.api.nvim_set_hl(0, "GitSignsDelete", { fg = "#ea6962" })
 
 These groups are useful when tuning native completion, floating windows, and plugin popups.
 
-| Group           | What it affects                                          |
-| --------------- | -------------------------------------------------------- |
-| `Pmenu`         | Popup menu body.                                         |
-| `PmenuSel`      | Selected popup menu item.                                |
-| `PmenuKind`     | Completion item kind column.                             |
-| `PmenuKindSel`  | Selected completion item kind.                           |
-| `PmenuExtra`    | Extra completion menu text.                              |
-| `PmenuExtraSel` | Selected extra completion menu text.                     |
-| `PmenuSbar`     | Popup menu scrollbar.                                    |
-| `PmenuThumb`    | Popup menu scrollbar thumb.                              |
-| `NormalFloat`   | Normal text in floating windows.                         |
-| `FloatBorder`   | Floating window borders.                                 |
-| `FloatTitle`    | Floating window title.                                   |
-| `FloatFooter`   | Floating window footer.                                  |
-| `PreInsert`     | Preview text inserted by `completeopt=preinsert`.        |
+| Group           | What it affects                                   |
+| --------------- | ------------------------------------------------- |
+| `Pmenu`         | Popup menu body.                                  |
+| `PmenuSel`      | Selected popup menu item.                         |
+| `PmenuKind`     | Completion item kind column.                      |
+| `PmenuKindSel`  | Selected completion item kind.                    |
+| `PmenuExtra`    | Extra completion menu text.                       |
+| `PmenuExtraSel` | Selected extra completion menu text.              |
+| `PmenuSbar`     | Popup menu scrollbar.                             |
+| `PmenuThumb`    | Popup menu scrollbar thumb.                       |
+| `NormalFloat`   | Normal text in floating windows.                  |
+| `FloatBorder`   | Floating window borders.                          |
+| `FloatTitle`    | Floating window title.                            |
+| `FloatFooter`   | Floating window footer.                           |
+| `PreInsert`     | Preview text inserted by `completeopt=preinsert`. |
 
 These groups affect more than completion: LSP hover, diagnostic floats, picker popups, and plugin
 windows often link to `NormalFloat` and `FloatBorder`.
@@ -656,22 +939,22 @@ windows often link to `NormalFloat` and `FloatBorder`.
 Treesitter highlight groups use capture names. They are useful for language-aware customization, but
 exact captures vary by parser and query files.
 
-| Group                  | What it affects                                  |
-| ---------------------- | ------------------------------------------------ |
-| `@variable`            | Variables.                                       |
-| `@variable.parameter`  | Function parameters.                             |
-| `@function`            | Functions.                                       |
-| `@function.method`     | Methods.                                         |
-| `@constructor`         | Constructors.                                    |
-| `@keyword`             | Keywords.                                        |
-| `@keyword.function`    | Function-like keywords.                          |
-| `@string`              | Strings.                                         |
-| `@number`              | Numbers.                                         |
-| `@boolean`             | Booleans.                                        |
-| `@comment`             | Comments.                                        |
-| `@type`                | Types.                                           |
-| `@property`            | Object properties or fields.                     |
-| `@punctuation.delimiter` | Delimiters such as commas and semicolons.      |
+| Group                    | What it affects                           |
+| ------------------------ | ----------------------------------------- |
+| `@variable`              | Variables.                                |
+| `@variable.parameter`    | Function parameters.                      |
+| `@function`              | Functions.                                |
+| `@function.method`       | Methods.                                  |
+| `@constructor`           | Constructors.                             |
+| `@keyword`               | Keywords.                                 |
+| `@keyword.function`      | Function-like keywords.                   |
+| `@string`                | Strings.                                  |
+| `@number`                | Numbers.                                  |
+| `@boolean`               | Booleans.                                 |
+| `@comment`               | Comments.                                 |
+| `@type`                  | Types.                                    |
+| `@property`              | Object properties or fields.              |
+| `@punctuation.delimiter` | Delimiters such as commas and semicolons. |
 
 Language-specific overrides append the language name:
 
@@ -685,11 +968,11 @@ vim.api.nvim_set_hl(0, "@keyword.rust", { fg = "#fe8019", italic = true })
 Plugin highlight groups are plugin-specific. This config currently customizes Snacks indent guides
 and Satellite's scrollbar.
 
-| Group               | What it affects                                  |
-| ------------------- | ------------------------------------------------ |
-| `SnacksIndent`      | Normal indent guide from `snacks.nvim`.          |
-| `SnacksIndentScope` | Active indent scope from `snacks.nvim`.          |
-| `SatelliteBar`      | Scrollbar bar from `satellite.nvim`.             |
+| Group               | What it affects                         |
+| ------------------- | --------------------------------------- |
+| `SnacksIndent`      | Normal indent guide from `snacks.nvim`. |
+| `SnacksIndentScope` | Active indent scope from `snacks.nvim`. |
+| `SatelliteBar`      | Scrollbar bar from `satellite.nvim`.    |
 
 Example from this config:
 
