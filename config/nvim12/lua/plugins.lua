@@ -52,6 +52,9 @@ require("snacks").setup({
     lazygit = {},
     picker = {
         sources = {
+            git_grep = {
+                ignorecase = true,
+            },
             explorer = {
                 auto_close = true,
                 jump = { close = true },
@@ -98,7 +101,57 @@ require("plugins/lualine")
 -- Bufferline
 -- https://github.com/akinsho/bufferline.nvim/blob/main/doc/bufferline.txt#L827
 vim.pack.add({ gh("akinsho/bufferline.nvim") })
-require("bufferline").setup()
+local statusline_main = vim.api.nvim_get_hl(0, { name = "StatusLineMain", link = false })
+local bufferline_bg = { bg = statusline_main.bg }
+local bufferline_selected = vim.tbl_extend("force", bufferline_bg, { fg = "#eeeeee" })
+require("bufferline").setup({
+    options = {
+        color_icons = true,
+    },
+    highlights = {
+        background = bufferline_bg,
+        buffer_selected = bufferline_selected,
+        buffer_visible = bufferline_bg,
+        close_button = bufferline_bg,
+        close_button_visible = bufferline_bg,
+        close_button_selected = bufferline_selected,
+        diagnostic = bufferline_bg,
+        diagnostic_visible = bufferline_bg,
+        diagnostic_selected = bufferline_selected,
+        error = bufferline_bg,
+        error_visible = bufferline_bg,
+        error_selected = bufferline_selected,
+        error_diagnostic = bufferline_bg,
+        error_diagnostic_visible = bufferline_bg,
+        error_diagnostic_selected = bufferline_selected,
+        hint = bufferline_bg,
+        hint_visible = bufferline_bg,
+        hint_selected = bufferline_selected,
+        hint_diagnostic = bufferline_bg,
+        hint_diagnostic_visible = bufferline_bg,
+        hint_diagnostic_selected = bufferline_selected,
+        info = bufferline_bg,
+        info_visible = bufferline_bg,
+        info_selected = bufferline_selected,
+        info_diagnostic = bufferline_bg,
+        info_diagnostic_visible = bufferline_bg,
+        info_diagnostic_selected = bufferline_selected,
+        modified = bufferline_bg,
+        modified_visible = bufferline_bg,
+        modified_selected = bufferline_selected,
+        separator = { link = "BufferLineSeparatorInactive" },
+        separator_selected = bufferline_selected,
+        separator_visible = { link = "BufferLineSeparatorInactive" },
+        tab = { link = "BufferLineTab" },
+        tab_selected = { link = "BufferLineTabSelected" },
+        warning = bufferline_bg,
+        warning_visible = bufferline_bg,
+        warning_selected = bufferline_selected,
+        warning_diagnostic = bufferline_bg,
+        warning_diagnostic_visible = bufferline_bg,
+        warning_diagnostic_selected = bufferline_selected,
+    },
+})
 
 -- Conform formatter
 vim.pack.add({ gh("stevearc/conform.nvim") })

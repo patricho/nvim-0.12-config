@@ -1,3 +1,13 @@
+local function extend_highlight(from, to, overrides)
+    local ok, base = pcall(vim.api.nvim_get_hl, 0, { name = from, link = false })
+    if not ok or vim.tbl_isempty(base) then
+        return false
+    end
+    base.default = nil
+    vim.api.nvim_set_hl(0, to, vim.tbl_extend("force", base, overrides))
+    return true
+end
+
 -- Highlight word under cursor
 vim.api.nvim_set_hl(0, "MiniCursorwordCurrent", { bg = "#702020" })
 vim.api.nvim_set_hl(0, "MiniCursorword", { bg = "#502020" })
@@ -50,9 +60,52 @@ vim.api.nvim_set_hl(0, "SatelliteBar", { bg = "#4C4846" })
 vim.api.nvim_set_hl(0, "WinBar", { fg = "#9D8761", bold = false })
 vim.api.nvim_set_hl(0, "DropBarKindFile", { bold = true })
 
+-- Bufferline/statusline default styling
+vim.api.nvim_set_hl(0, "StatusLineMain", { bg = "#2C2033", fg = "#838C9C" })
+vim.api.nvim_set_hl(0, "StatusLineDimmed", { bg = "#2C2033", fg = "#636C7C" })
+
 -- Bufferline
-vim.api.nvim_set_hl(0, "BufferLineSeparator", { fg = "#444444", bg = "#1e1e1e" })
-vim.api.nvim_set_hl(0, "BufferLineIndicatorSelected", { fg = "#444444", bg = "#282828" })
+vim.api.nvim_set_hl(0, "BufferLineTabInactive", { link = "StatusLineMain" })
+vim.api.nvim_set_hl(0, "BufferLineTab", { link = "StatusLineMain" })
+vim.api.nvim_set_hl(0, "BufferLineTabSelected", { bg = "#4C4053", fg = "#eeeeee" })
+vim.api.nvim_set_hl(0, "BufferLineIndicatorSelected", { bg = "#4C4053", fg = "#636C7C" })
+vim.api.nvim_set_hl(0, "BufferLineSeparatorInactive", { link = "StatusLineMain" })
+vim.api.nvim_set_hl(0, "BufferLineFill", { link = "StatusLineMain" })
+vim.api.nvim_set_hl(0, "BufferLineBackground", { link = "StatusLineMain" })
+vim.api.nvim_set_hl(0, "BufferLineSeparator", { link = "StatusLineDimmed" })
+vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { link = "BufferLineTabSelected" })
+vim.api.nvim_set_hl(0, "BufferLineCloseButton", { link = "StatusLineDimmed" })
+vim.api.nvim_set_hl(0, "BufferLineCloseButtonVisible", { link = "StatusLineDimmed" })
+vim.api.nvim_set_hl(0, "BufferLineCloseButtonSelected", { link = "BufferLineIndicatorSelected" })
+vim.api.nvim_set_hl(0, "BufferLineModified", { link = "StatusLineDimmed" })
+vim.api.nvim_set_hl(0, "BufferLineModifiedVisible", { link = "StatusLineDimmed" })
+vim.api.nvim_set_hl(0, "BufferLineModifiedSelected", { link = "BufferLineIndicatorSelected" })
+
+local function set_bufferline_devicon_backgrounds()
+    local statusline_main = vim.api.nvim_get_hl(0, { name = "StatusLineMain", link = false })
+    local bufferline_selected = vim.api.nvim_get_hl(0, { name = "BufferLineTabSelected", link = false })
+
+    for _, name in ipairs(vim.fn.getcompletion("DevIcon", "highlight")) do
+        extend_highlight(name, name, { bg = statusline_main.bg })
+    end
+    for _, name in ipairs(vim.fn.getcompletion("BufferLineDevIcon", "highlight")) do
+        extend_highlight(name, name, {
+            bg = name:match("Selected$") and bufferline_selected.bg or statusline_main.bg,
+        })
+    end
+end
+
+set_bufferline_devicon_backgrounds()
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+    callback = set_bufferline_devicon_backgrounds,
+})
+vim.api.nvim_create_autocmd("VimEnter", {
+    once = true,
+    callback = function()
+        vim.schedule(set_bufferline_devicon_backgrounds)
+    end,
+})
 
 -- Git diff
 vim.api.nvim_set_hl(0, "DiffAdd", { bg = "#0f4412" })

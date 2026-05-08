@@ -6,12 +6,8 @@ local feed = function(keys)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, true, true), "n", false)
 end
 
--- Which Key groups
-require("which-key").add({
-    { "<leader>f", group = "Find/search" },
-    { "<leader>l", group = "LSP" },
-    { "<leader>W", group = "Windows" },
-})
+local gs = require("gitsigns")
+local diag_current_line = true
 
 -- Editing
 map("n", "U", "<cmd>redo<cr>", "Redo")
@@ -36,6 +32,7 @@ map("v", "c", '"_c', "Change without yank")
 map("v", "C", '"_C', "Change without yank")
 
 -- Windows
+require("which-key").add({ { "<leader>W", group = "[W]indows" } })
 map("n", "<C-h>", "<C-w>h", "Window go left")
 map("n", "<C-j>", "<C-w>j", "Window go down")
 map("n", "<C-k>", "<C-w>k", "Window go up")
@@ -47,14 +44,24 @@ map("n", "<leader>Wj", "<C-w>s", "Window split down")
 map("n", "<leader>Wc", "<C-w>q", "Window close")
 map("n", "<leader>WC", "<C-w>o", "Window close others")
 
--- Buffer navigation
+-- Buffers navigation
 map("n", "<s-tab>", "<cmd>bprev<cr>", "Prev buffer")
 map("n", "<tab>", "<cmd>bnext<cr>", "Next buffer")
 map("n", "<leader>w", "<cmd>write<cr>", "[W]rite buffer")
 map("n", "<leader>c", "<cmd>bdelete<cr>", "[C]lose buffer")
 map("n", "<Leader>C", "<cmd>BufferLineCloseOthers<cr>", "[C]lose all other buffers")
 
+-- Navigation
+require("which-key").add({ { "<leader>n", group = "[N]avigate" } })
+map("n", "<leader>nq", "<cmd>cnext<cr>", "[N]avigate to next [Q]uickfix")
+map("n", "<leader>nQ", "<cmd>cprev<cr>", "[N]avigate to prev [Q]uickfix")
+map("n", "<leader>nd", function() vim.diagnostic.jump({ count = 1 }) end, "[N]avigate to next [D]iagnostic")
+map("n", "<leader>nD", function() vim.diagnostic.jump({ count = -1 }) end, "[N]avigate to prev [D]iagnostic")
+map("n", "<leader>ng", function() gs.nav_hunk('next') end, "[N]avigate to next [G]it change")
+map("n", "<leader>nG", function() gs.nav_hunk('prev') end, "[N]avigate to prev [G]it change")
+
 -- Pickers and search
+require("which-key").add({ { "<leader>f", group = "[F]ind" } })
 map("n", "<leader>e", function() Snacks.explorer.reveal() end, "Snacks [E]xplorer")
 map("n", "<leader>F", function() Snacks.picker('git_files') end, "[F]ind [F]iles")
 map("n", "<leader>ff", function() Snacks.picker('git_files') end, "[F]ind [F]iles")
@@ -75,10 +82,9 @@ map("n", "<esc>", "<cmd>nohlsearch<CR>", "Clear search highlights")
 map("n", "-", function() require("flash").jump() end, "Flash jump")
 
 -- Quickfix
-map("n", "]q", "<cmd>cnext<cr>", "Next quickfix")
-map("n", "[q", "<cmd>cprev<cr>", "Prev quickfix")
-
--- Quickfix list: Shift+Enter to open item and immediately close quickfix
+map("n", "<leader>qc", "<cmd>cclose<cr>", "[Q]uickfix [C]lose")
+map("n", "<leader>qj", "<cmd>cnext<cr>", "[Q]uickfix [N]ext item")
+map("n", "<leader>qk", "<cmd>cprev<cr>", "[Q]uickfix [P]rev item")
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "qf",
     group = vim.api.nvim_create_augroup("quickfix_mappings", { clear = true }),
@@ -91,23 +97,8 @@ vim.api.nvim_create_autocmd("FileType", {
 -- Diagnostics
 map("n", "<leader>d", function() vim.diagnostic.open_float({ scope = "line" }) end, "Diagnostic float (current line)")
 map("n", "<leader>D", vim.diagnostic.setqflist, "All diagnostics (quickfix)")
-local diag_current_line = true
-map("n", "<leader>ld", function()
-    diag_current_line = not diag_current_line
-    vim.diagnostic.config({
-        virtual_text = {
-            current_line = diag_current_line or nil,
-            source = "if_many",
-            prefix = "●",
-            spacing = 20,
-        },
-    })
-end, "[L]SP toggle [D]iagnostic virtual text")
-map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, "Next diagnostic")
-map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, "Prev diagnostic")
 
 -- Git
-local gs = require("gitsigns")
 require("which-key").add({
     { "<leader>g",  group = "[G]it" },
     { "<leader>gb", group = "[G]it [B]lame" },
@@ -136,7 +127,6 @@ map("n", "<leader>glf", function() Snacks.picker("git_log_file") end, "[G]it [L]
 map("n", "<leader>gll", function() Snacks.picker("git_log_line") end, "[G]it [L]og current [L]ine")
 map("v", "<leader>gll", function() Snacks.picker("git_log_line") end, "[G]it [L]og current [L]ine")
 -- TODO: Add commands for native diffsplit, diffthis, diffoff
--- TODO: Change commands for ]c, ]d, etc
 
 -- Native autocomplete popup navigation
 vim.keymap.set("i", "<C-j>", function()
@@ -192,6 +182,23 @@ vim.api.nvim_create_autocmd("LspAttach", {
             vim.lsp.buf.signature_help()
         end
 
+        -- LSP commands
+        require("which-key").add({ { "<leader>l", group = "[L]SP" } })
+        bmap("n", "<leader>lf", function() vim.lsp.buf.format({ async = true }) end, "[L]SP [F]ormat buffer")
+        bmap("n", "<leader>ls", "<cmd>LspStatus<cr>", "[L]SP [S]tatus")
+        bmap("n", "<leader>ld", function()
+            diag_current_line = not diag_current_line
+            vim.diagnostic.config({
+                virtual_text = {
+                    current_line = diag_current_line or nil,
+                    source = "if_many",
+                    prefix = "●",
+                    spacing = 20,
+                },
+            })
+        end, "[L]SP toggle [D]iagnostic virtual text")
+
+        -- LSP editing
         bmap("n", "K", vim.lsp.buf.hover, "Hover docs")
         bmap("n", "gh", vim.lsp.buf.hover, "Hover docs")
         bmap("n", "<leader>h", vim.lsp.buf.hover, "[H]over docs")
@@ -206,6 +213,5 @@ vim.api.nvim_create_autocmd("LspAttach", {
         bmap("n", "gs", insert_signature_help, "[G]o to [S]ignature help")
         bmap("n", "<C-s>", insert_signature_help, "Signature help")
         bmap("i", "<C-s>", insert_signature_help, "Signature help")
-        bmap("n", "<leader>lf", function() vim.lsp.buf.format({ async = true }) end, "[L]SP [F]ormat buffer")
     end,
 })
