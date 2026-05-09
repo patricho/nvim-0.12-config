@@ -17,6 +17,25 @@ vim.pack.add({ gh("folke/which-key.nvim") })
 -- Dropbar breadcrumbs
 vim.pack.add({ gh("Bekaboo/dropbar.nvim") })
 
+-- Recall marks
+vim.pack.add({ gh("fnune/recall.nvim") })
+require("recall").setup({
+    sign = "",
+    sign_highlight = "@comment.note",
+
+    telescope = {
+        autoload = true,
+        mappings = {
+            unmark_selected_entry = {
+                normal = "dd",
+                insert = "<M-d>",
+            },
+        },
+    },
+
+    wshada = vim.fn.has("nvim-0.10") == 0,
+})
+
 -- Icons
 vim.pack.add({ gh("nvim-tree/nvim-web-devicons") })
 
@@ -68,7 +87,9 @@ require("snacks").setup({
             }
         }
     },
-    statuscolumn = {},
+    statuscolumn = {
+        left = { "sign" },
+    },
     indent = {
         indent = { char = "│", },
         animate = { enabled = false, }

@@ -67,17 +67,9 @@ local function has_cmd_info()
     return vim.o.cmdheight == 0
 end
 
-local theme = require("lualine.themes.nightfly")
-
-for _, mode in ipairs({ "normal", "insert", "visual", "replace", "command", "inactive" }) do
-    if theme[mode] then
-        theme[mode].c = "StatusLineMain"
-    end
-end
-
 require("lualine").setup({
     options = {
-        theme = theme,
+        theme = "nightfly",
         component_separators = { left = "", right = "" },
         section_separators = { left = "", right = "" },
     },

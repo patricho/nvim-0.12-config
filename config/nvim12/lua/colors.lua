@@ -61,14 +61,14 @@ vim.api.nvim_set_hl(0, "WinBar", { fg = "#9D8761", bold = false })
 vim.api.nvim_set_hl(0, "DropBarKindFile", { bold = true })
 
 -- Bufferline/statusline default styling
-vim.api.nvim_set_hl(0, "StatusLineMain", { bg = "#2C2033", fg = "#838C9C" })
-vim.api.nvim_set_hl(0, "StatusLineDimmed", { bg = "#2C2033", fg = "#636C7C" })
+vim.api.nvim_set_hl(0, "StatusLineMain", { bg = "#2C3043", fg = "#838C9C" })
+vim.api.nvim_set_hl(0, "StatusLineDimmed", { bg = "#2C3043", fg = "#636C7C" })
 
 -- Bufferline
 vim.api.nvim_set_hl(0, "BufferLineTabInactive", { link = "StatusLineMain" })
 vim.api.nvim_set_hl(0, "BufferLineTab", { link = "StatusLineMain" })
-vim.api.nvim_set_hl(0, "BufferLineTabSelected", { bg = "#4C4053", fg = "#eeeeee" })
-vim.api.nvim_set_hl(0, "BufferLineIndicatorSelected", { bg = "#4C4053", fg = "#636C7C" })
+vim.api.nvim_set_hl(0, "BufferLineTabSelected", { bg = "#3C4053", fg = "#eeeeee" })
+vim.api.nvim_set_hl(0, "BufferLineIndicatorSelected", { bg = "#3C4053", fg = "#636C7C" })
 vim.api.nvim_set_hl(0, "BufferLineSeparatorInactive", { link = "StatusLineMain" })
 vim.api.nvim_set_hl(0, "BufferLineFill", { link = "StatusLineMain" })
 vim.api.nvim_set_hl(0, "BufferLineBackground", { link = "StatusLineMain" })

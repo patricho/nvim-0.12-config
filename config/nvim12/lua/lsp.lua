@@ -9,7 +9,7 @@ vim.lsp.enable({
     "golangci_lint_ls",
     "gopls",
     "lua_ls",
-    "omnisharp",
+    "csharp_ls",
     "phpactor",
     "rust_analyzer",
     "ts_ls",

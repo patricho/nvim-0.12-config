@@ -88,6 +88,10 @@
       "rev": "b68f1e66736840e837c2a77ebff59c932fcb70c7",
       "src": "https://github.com/rmehri01/onenord.nvim"
     },
+    "recall.nvim": {
+      "rev": "812b3b0ec40568fa6f1a62f5baf052a4e3c60367",
+      "src": "https://github.com/fnune/recall.nvim"
+    },
     "satellite.nvim": {
       "rev": "87843c9c8f28b54332497302de380a6d94c9e82b",
       "src": "https://github.com/lewis6991/satellite.nvim"

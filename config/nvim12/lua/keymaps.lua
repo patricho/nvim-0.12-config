@@ -69,9 +69,12 @@ map("n", "<leader>fF", function() Snacks.picker('files') end, "[F]ind all [F]ile
 map("n", "<leader>fw", function() Snacks.picker('git_grep') end, "[F]ind [w]ords")
 map("n", "<leader>fW", function() Snacks.picker('grep') end, "[F]ind [W]ords in all files")
 map('n', '<leader>fg', function() Snacks.picker("git_status") end, '[F]ind [G]it status')
+map('n', '<leader>fl', function() Snacks.picker("lines") end, '[F]ind buffer [L]ines')
+map('n', '<leader>fm', function() require("recall.snacks").pick() end, '[F]ind Recall [M]arks')
 map("n", "<leader>fr", function() Snacks.picker('recent') end, "[F]ind [R]ecent files")
 map("n", "<leader>fs", function() Snacks.picker('lsp_symbols') end, "[F]ind buffer [S]ymbols")
 map("n", "<leader>fS", function() Snacks.picker('lsp_workspace_symbols') end, "[F]ind workspace [S]ymbols")
+map("n", "<leader>fu", function() Snacks.picker('undo') end, "[F]ind [U]ndo history")
 map("n", "<leader>fd", function() Snacks.picker('diagnostics_buffer') end, "[F]ind buffer [D]iagnostics")
 map("n", "<leader>fD", function() Snacks.picker('diagnostics') end, "[F]ind workspace [D]iagnostics")
 map("n", "<leader>fc", function() Snacks.picker('grep_word') end, "[F]ind word under [c]ursor")
@@ -97,6 +100,21 @@ vim.api.nvim_create_autocmd("FileType", {
 -- Diagnostics
 map("n", "<leader>d", function() vim.diagnostic.open_float({ scope = "line" }) end, "Diagnostic float (current line)")
 map("n", "<leader>D", vim.diagnostic.setqflist, "All diagnostics (quickfix)")
+
+-- UI
+require("which-key").add({ { "<leader>g", group = "[U]I" }, })
+map("n", "<leader>uw", "<cmd>set wrap!<cr>", "[U]I toggle word [W]rap")
+map("n", "<leader>ud", function()
+    diag_current_line = not diag_current_line
+    vim.diagnostic.config({
+        virtual_text = {
+            current_line = diag_current_line or nil,
+            source = "if_many",
+            prefix = "●",
+            spacing = 20,
+        },
+    })
+end, "[U]I toggle [D]iagnostic virtual text")
 
 -- Git
 require("which-key").add({
@@ -127,6 +145,12 @@ map("n", "<leader>glf", function() Snacks.picker("git_log_file") end, "[G]it [L]
 map("n", "<leader>gll", function() Snacks.picker("git_log_line") end, "[G]it [L]og current [L]ine")
 map("v", "<leader>gll", function() Snacks.picker("git_log_line") end, "[G]it [L]og current [L]ine")
 -- TODO: Add commands for native diffsplit, diffthis, diffoff
+
+-- Recall marks
+map("n", "<leader>mm", ":RecallToggle<CR>", "[M]arks toggle [M]ark")
+-- map("n", "<leader>mn", ":RecallNext<CR>", { noremap = true, silent = true })
+-- map("n", "<leader>mp", ":RecallPrevious<CR>", { noremap = true, silent = true })
+map("n", "<leader>mc", ":RecallClear<CR>", "[M]arks [C]lear")
 
 -- Native autocomplete popup navigation
 vim.keymap.set("i", "<C-j>", function()
@@ -186,17 +210,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
         require("which-key").add({ { "<leader>l", group = "[L]SP" } })
         bmap("n", "<leader>lf", function() vim.lsp.buf.format({ async = true }) end, "[L]SP [F]ormat buffer")
         bmap("n", "<leader>ls", "<cmd>LspStatus<cr>", "[L]SP [S]tatus")
-        bmap("n", "<leader>ld", function()
-            diag_current_line = not diag_current_line
-            vim.diagnostic.config({
-                virtual_text = {
-                    current_line = diag_current_line or nil,
-                    source = "if_many",
-                    prefix = "●",
-                    spacing = 20,
-                },
-            })
-        end, "[L]SP toggle [D]iagnostic virtual text")
 
         -- LSP editing
         bmap("n", "K", vim.lsp.buf.hover, "Hover docs")
