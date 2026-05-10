@@ -17,24 +17,8 @@ vim.pack.add({ gh("folke/which-key.nvim") })
 -- Dropbar breadcrumbs
 vim.pack.add({ gh("Bekaboo/dropbar.nvim") })
 
--- Recall marks
-vim.pack.add({ gh("fnune/recall.nvim") })
-require("recall").setup({
-    sign = "",
-    sign_highlight = "@comment.note",
-
-    telescope = {
-        autoload = true,
-        mappings = {
-            unmark_selected_entry = {
-                normal = "dd",
-                insert = "<M-d>",
-            },
-        },
-    },
-
-    wshada = vim.fn.has("nvim-0.10") == 0,
-})
+-- Custom marks commands
+require("plugins/marks")
 
 -- Icons
 vim.pack.add({ gh("nvim-tree/nvim-web-devicons") })
@@ -87,14 +71,15 @@ require("snacks").setup({
             }
         }
     },
-    statuscolumn = {
-        left = { "sign" },
-    },
     indent = {
         indent = { char = "│", },
         animate = { enabled = false, }
     }
 })
+
+-- Custom statuscolumn
+vim.o.statuscolumn = [[%!v:lua.require'plugins.statuscolumn'.get()]]
+
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "snacks_picker_input",
     callback = function()
@@ -110,6 +95,7 @@ require('vague').setup({
     italic = false,
 })
 vim.cmd.colorscheme("vague")
+
 -- vim.pack.add({ gh("sainnhe/gruvbox-material") })
 -- vim.g.gruvbox_material_enable_italic = true
 -- vim.g.gruvbox_material_background = "medium"

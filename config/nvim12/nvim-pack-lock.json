@@ -1,5 +1,9 @@
 {
   "plugins": {
+    "bookmarks.nvim": {
+      "rev": "0540d52ba64d0ec7677ec1ef14b3624c95a2aaba",
+      "src": "https://github.com/tomasky/bookmarks.nvim"
+    },
     "bufferline.nvim": {
       "rev": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3",
       "src": "https://github.com/akinsho/bufferline.nvim"
@@ -39,6 +43,14 @@
     "lualine.nvim": {
       "rev": "131a558e13f9f28b15cd235557150ccb23f89286",
       "src": "https://github.com/nvim-lualine/lualine.nvim"
+    },
+    "markit.nvim": {
+      "rev": "c716195d5b0b21ef03a20a1facc46d33ca9f7c49",
+      "src": "https://github.com/2KAbhishek/markit.nvim"
+    },
+    "marks.nvim": {
+      "rev": "f353e8c08c50f39e99a9ed474172df7eddd89b72",
+      "src": "https://github.com/chentoast/marks.nvim"
     },
     "mini.cursorword": {
       "rev": "a7e606208197ca5d1c5288750d5163429b4c74da",
@@ -87,6 +99,14 @@
     "onenord.nvim": {
       "rev": "b68f1e66736840e837c2a77ebff59c932fcb70c7",
       "src": "https://github.com/rmehri01/onenord.nvim"
+    },
+    "pickme.nvim": {
+      "rev": "3bfd63fa0a1fa362afc9dfa86b83100e75903e6b",
+      "src": "https://github.com/2kabhishek/pickme.nvim"
+    },
+    "plenary.nvim": {
+      "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
+      "src": "https://github.com/nvim-lua/plenary.nvim"
     },
     "recall.nvim": {
       "rev": "812b3b0ec40568fa6f1a62f5baf052a4e3c60367",

@@ -7,6 +7,7 @@ local feed = function(keys)
 end
 
 local gs = require("gitsigns")
+local marks = require("plugins/marks")
 local diag_current_line = true
 
 -- Editing
@@ -23,9 +24,9 @@ map("n", "§", "yiw", "Yank inner word")
 map("n", "°", '"_diwP', "Paste inner word")
 map("n", "½", '"_diwP', "Paste inner word")
 map("n", "ö", '"_dd', "Delete row")
-map("n", "Ö", 'ma"8yy"8p`a', "Duplicate line")
-map("n", "Ä", "maO<esc>`a", "Insert empty line above")
-map("n", "ä", "mao<esc>`a", "Insert empty line below")
+map("n", "Ö", 'm0"8yy"8p`0', "Duplicate line")
+map("n", "Ä", "m0O<esc>`0", "Insert empty line above")
+map("n", "ä", "m0o<esc>`0", "Insert empty line below")
 map("v", "Ö", '"8y"8P', "Duplicate selected lines")
 map("v", "p", '"_dP', "Paste over selection without yanking")
 map("v", "c", '"_c', "Change without yank")
@@ -59,6 +60,8 @@ map("n", "<leader>nd", function() vim.diagnostic.jump({ count = 1 }) end, "[N]av
 map("n", "<leader>nD", function() vim.diagnostic.jump({ count = -1 }) end, "[N]avigate to prev [D]iagnostic")
 map("n", "<leader>ng", function() gs.nav_hunk('next') end, "[N]avigate to next [G]it change")
 map("n", "<leader>nG", function() gs.nav_hunk('prev') end, "[N]avigate to prev [G]it change")
+map("n", "<leader>nm", marks.next, "[N]avigate to next global [M]ark")
+map("n", "<leader>nM", marks.prev, "[N]avigate to prev global [M]ark")
 
 -- Pickers and search
 require("which-key").add({ { "<leader>f", group = "[F]ind" } })
@@ -70,7 +73,7 @@ map("n", "<leader>fw", function() Snacks.picker('git_grep') end, "[F]ind [w]ords
 map("n", "<leader>fW", function() Snacks.picker('grep') end, "[F]ind [W]ords in all files")
 map('n', '<leader>fg', function() Snacks.picker("git_status") end, '[F]ind [G]it status')
 map('n', '<leader>fl', function() Snacks.picker("lines") end, '[F]ind buffer [L]ines')
-map('n', '<leader>fm', function() require("recall.snacks").pick() end, '[F]ind Recall [M]arks')
+map('n', '<leader>fm', function() Snacks.picker("marks") end, '[F]ind [M]arks')
 map("n", "<leader>fr", function() Snacks.picker('recent') end, "[F]ind [R]ecent files")
 map("n", "<leader>fs", function() Snacks.picker('lsp_symbols') end, "[F]ind buffer [S]ymbols")
 map("n", "<leader>fS", function() Snacks.picker('lsp_workspace_symbols') end, "[F]ind workspace [S]ymbols")
@@ -146,11 +149,11 @@ map("n", "<leader>gll", function() Snacks.picker("git_log_line") end, "[G]it [L]
 map("v", "<leader>gll", function() Snacks.picker("git_log_line") end, "[G]it [L]og current [L]ine")
 -- TODO: Add commands for native diffsplit, diffthis, diffoff
 
--- Recall marks
-map("n", "<leader>mm", ":RecallToggle<CR>", "[M]arks toggle [M]ark")
--- map("n", "<leader>mn", ":RecallNext<CR>", { noremap = true, silent = true })
--- map("n", "<leader>mp", ":RecallPrevious<CR>", { noremap = true, silent = true })
-map("n", "<leader>mc", ":RecallClear<CR>", "[M]arks [C]lear")
+-- Marks
+require("which-key").add({ { "<leader>m", group = "[M]arks" } })
+map("n", "<leader>mm", marks.toggle, "[M]arks toggle global [M]ark")
+map("n", "<leader>mc", marks.clear_lower, "[M]arks [C]lear local marks")
+map("n", "<leader>mC", marks.clear_upper, "[M]arks [C]lear global marks")
 
 -- Native autocomplete popup navigation
 vim.keymap.set("i", "<C-j>", function()

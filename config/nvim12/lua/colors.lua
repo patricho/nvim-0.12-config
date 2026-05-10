@@ -112,3 +112,6 @@ vim.api.nvim_set_hl(0, "DiffAdd", { bg = "#0f4412" })
 vim.api.nvim_set_hl(0, "DiffDelete", { fg = "#962623" })
 vim.api.nvim_set_hl(0, "DiffText", { bg = "#466570" })
 vim.api.nvim_set_hl(0, "DiffChange", { bg = "#25343c" })
+
+-- Statuscolumn mark icon
+vim.api.nvim_set_hl(0, "StatusColumnMark", { fg = "#fe8019" })
