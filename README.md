@@ -139,9 +139,9 @@ needed.
 
 ## Built-in Diff Mode Quickstart
 
-This config also installs `diffview.nvim`, but that plugin builds on Neovim's built-in diff mode rather
-than replacing it. If a plugin mentions commands like `]c`, `[c`, `:diffget`, or `:diffput`, it is
-talking about native diff-mode features documented in `:help diff`.
+This config also installs `diffview.nvim`, but that plugin builds on Neovim's built-in diff mode
+rather than replacing it. If a plugin mentions commands like `]c`, `[c`, `:diffget`, or `:diffput`,
+it is talking about native diff-mode features documented in `:help diff`.
 
 ### Fast start
 
@@ -181,8 +181,8 @@ When a window is in diff mode, Neovim enables several window-local behaviors aut
 | `foldmethod=diff` | Folds unchanged regions so changes stand out.            |
 | `wrap` off        | Avoids wrapped lines breaking visual alignment.          |
 
-Diffs are local to the current tab page. You can have one diff session in one tab and a different one in
-another.
+Diffs are local to the current tab page. You can have one diff session in one tab and a different
+one in another.
 
 ### Core workflow
 
@@ -205,12 +205,13 @@ These are the main built-in motions for moving between hunks:
 | `3]c`   | Jump forward three hunks.       |
 | `2[c`   | Jump backward two hunks.        |
 
-These commands jump to the start of each change. They work only when the current window is in diff mode.
+These commands jump to the start of each change. They work only when the current window is in diff
+mode.
 
 ### Copying changes between diff buffers
 
-This is the feature many Git diff plugins rely on. Neovim can copy the current hunk, or a specified line
-range, from one diff buffer to another.
+This is the feature many Git diff plugins rely on. Neovim can copy the current hunk, or a specified
+line range, from one diff buffer to another.
 
 | Command                    | Meaning                                                                            |
 | -------------------------- | ---------------------------------------------------------------------------------- |
@@ -275,15 +276,16 @@ Advanced concepts from the help page:
 
 ### Compare current buffer with the saved file
 
-This built-in user-command pattern from `:help diff` is handy when you want to review your unsaved edits
-against the version on disk:
+This built-in user-command pattern from `:help diff` is handy when you want to review your unsaved
+edits against the version on disk:
 
 ```vim
 command DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_ |
       \ diffthis | wincmd p | diffthis
 ```
 
-After defining it, run `:DiffOrig` to compare the current buffer with the file as it was last loaded.
+After defining it, run `:DiffOrig` to compare the current buffer with the file as it was last
+loaded.
 
 ### Quick wizard
 
@@ -494,12 +496,13 @@ Supported values:
 | `preselect` | Select a completion item that has its `preselect` field set, for example by an LSP server.      |
 | `preview`   | Show extra information for the selected completion item in the preview window.                  |
 
-When native `autocomplete` is enabled, `noselect` is automatically enabled unless `preinsert` is also
-enabled. Only `fuzzy`, `longest`, `popup`, `preinsert`, `preselect`, and `preview` have an effect
-while `autocomplete` is active.
+When native `autocomplete` is enabled, `noselect` is automatically enabled unless `preinsert` is
+also enabled. Only `fuzzy`, `longest`, `popup`, `preinsert`, `preselect`, and `preview` have an
+effect while `autocomplete` is active.
 
 The configured value means: show a menu, show it even for a single item, do not insert text until a
-selection is made, show completion documentation/details in a popup window, and allow fuzzy matching.
+selection is made, show completion documentation/details in a popup window, and allow fuzzy
+matching.
 
 For native autocomplete, `fuzzy` also helps with case-mismatch lookups such as typing `findby` and
 still matching `findByUser`.
@@ -514,20 +517,20 @@ vim.opt.autocomplete = true
 
 Useful insert-mode commands:
 
-| Command | Meaning |
-| ------- | ------- |
-| `<C-n>` | Show the completion menu manually and move to the next match. |
+| Command | Meaning                                                           |
+| ------- | ----------------------------------------------------------------- |
+| `<C-n>` | Show the completion menu manually and move to the next match.     |
 | `<C-p>` | Show the completion menu manually and move to the previous match. |
-| `<C-e>` | Hide the completion menu. |
+| `<C-e>` | Hide the completion menu.                                         |
 
 So if you want to force completion to appear in Insert mode, use `<C-n>` or `<C-p>`. In this config,
-`<C-j>` and `<C-k>` are also wired to those same popup-navigation commands when the completion menu is
-already visible.
+`<C-j>` and `<C-k>` are also wired to those same popup-navigation commands when the completion menu
+is already visible.
 
 ### PHP completion note
 
-PHP completion in this config comes from `phpactor` over Neovim's built-in LSP completion. One Phpactor
-setting matters for member completion on variables:
+PHP completion in this config comes from `phpactor` over Neovim's built-in LSP completion. One
+Phpactor setting matters for member completion on variables:
 
 ```lua
 init_options = {
@@ -535,10 +538,11 @@ init_options = {
 }
 ```
 
-That makes Phpactor ignore the leading `$` when completing PHP variables, which helps avoid malformed
-variable completion contexts such as the documented "double dollar" issue. It does not add full
-case-insensitive member matching by itself; if typing `findby` still does not suggest `findByUser`, that
-behavior is most likely limited by Phpactor's member-completion filtering rather than Neovim's popup UI.
+That makes Phpactor ignore the leading `$` when completing PHP variables, which helps avoid
+malformed variable completion contexts such as the documented "double dollar" issue. It does not add
+full case-insensitive member matching by itself; if typing `findby` still does not suggest
+`findByUser`, that behavior is most likely limited by Phpactor's member-completion filtering rather
+than Neovim's popup UI.
 
 ### `fillchars`
 
@@ -554,8 +558,8 @@ vim.opt.fillchars = {
 }
 ```
 
-That means deleted diff filler lines use `╱` instead of `-`, and the usual `~` markers at the end
-of a buffer are hidden by replacing them with spaces.
+That means deleted diff filler lines use `╱` instead of `-`, and the usual `~` markers at the end of
+a buffer are hidden by replacing them with spaces.
 
 Common `fillchars` items:
 
@@ -587,9 +591,9 @@ Any item you omit falls back to Neovim's default.
 
 Two details are easy to miss:
 
-1. The separator variants `horiz`, `horizup`, `horizdown`, `vertleft`, `vertright`, and
-   `verthoriz` are mainly relevant when `laststatus=3`, because otherwise Neovim mostly shows plain
-   vertical window separators.
+1. The separator variants `horiz`, `horizup`, `horizdown`, `vertleft`, `vertright`, and `verthoriz`
+   are mainly relevant when `laststatus=3`, because otherwise Neovim mostly shows plain vertical
+   window separators.
 2. If `ambiwidth=double`, Neovim falls back to single-byte alternatives for several box-drawing
    characters so the UI stays aligned.
 
@@ -617,27 +621,53 @@ Only `{item}` is required. The optional pieces control padding, alignment, and t
 
 Common statusline items:
 
-| Item | Meaning                                                  |
-| ---- | -------------------------------------------------------- |
-| `%f` | File path as typed or relative to the current directory. |
-| `%F` | Full file path.                                          |
-| `%t` | File name only.                                          |
-| `%m` | Modified flag, shown as `[+]`.                           |
-| `%r` | Readonly flag, shown as `[RO]`.                          |
-| `%h` | Help buffer flag.                                        |
-| `%w` | Preview window flag.                                     |
-| `%y` | Filetype.                                                |
-| `%n` | Buffer number.                                           |
-| `%l` | Current line number.                                     |
-| `%L` | Total lines in buffer.                                   |
-| `%c` | Current byte column.                                     |
-| `%v` | Current virtual/screen column.                           |
-| `%p` | Percentage through file by line.                         |
-| `%P` | Percentage through the displayed window.                 |
-| `%S` | `showcmd` content for a pending Normal-mode command.     |
-| `%=` | Split left and right aligned sections.                   |
-| `%<` | Mark where truncation should happen if space is limited. |
-| `%%` | Literal percent sign.                                    |
+| Item | Meaning                                                                                                                                                                                                                                                                                                                                          |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `%%` | Literal percent sign.                                                                                                                                                                                                                                                                                                                            |
+| `%<` | Mark where truncation should happen if space is limited.                                                                                                                                                                                                                                                                                         |
+| `%=` | Split left and right aligned sections.                                                                                                                                                                                                                                                                                                           |
+| `%B` | As above, in hexadecimal.                                                                                                                                                                                                                                                                                                                        |
+| `%F` | Full file path.                                                                                                                                                                                                                                                                                                                                  |
+| `%F` | Full path to the file in the buffer.                                                                                                                                                                                                                                                                                                             |
+| `%H` | Help buffer flag, text is ",HLP".                                                                                                                                                                                                                                                                                                                |
+| `%L` | Number of lines in buffer.                                                                                                                                                                                                                                                                                                                       |
+| `%L` | Total lines in buffer.                                                                                                                                                                                                                                                                                                                           |
+| `%M` | Modified flag, text is ",+" or ",-".                                                                                                                                                                                                                                                                                                             |
+| `%O` | As above, in hexadecimal.                                                                                                                                                                                                                                                                                                                        |
+| `%P` | Percentage through the displayed window.                                                                                                                                                                                                                                                                                                         |
+| `%R` | Readonly flag, text is ",RO".                                                                                                                                                                                                                                                                                                                    |
+| `%S` | `showcmd` content for a pending Normal-mode command.                                                                                                                                                                                                                                                                                             |
+| `%V` | Virtual column number as -{num}. Not displayed if equal to 'c'.                                                                                                                                                                                                                                                                                  |
+| `%W` | Preview window flag, text is ",PRV".                                                                                                                                                                                                                                                                                                             |
+| `%Y` | Type of file in the buffer, e.g., ",VIM". See 'filetype'.                                                                                                                                                                                                                                                                                        |
+| `%a` | Argument list status as in default title. ({current} of {max})                                                                                                                                                                                                                                                                                   |
+| `%b` | Value of character under cursor.                                                                                                                                                                                                                                                                                                                 |
+| `%c` | Column number (byte index).                                                                                                                                                                                                                                                                                                                      |
+| `%c` | Current byte column.                                                                                                                                                                                                                                                                                                                             |
+| `%f` | File path as typed or relative to the current directory.                                                                                                                                                                                                                                                                                         |
+| `%h` | Help buffer flag.                                                                                                                                                                                                                                                                                                                                |
+| `%k` | Value of "b:keymap_name" or 'keymap' when :lmap mappings are being used: "<keymap>"                                                                                                                                                                                                                                                              |
+| `%l` | Current line number.                                                                                                                                                                                                                                                                                                                             |
+| `%l` | Line number.                                                                                                                                                                                                                                                                                                                                     |
+| `%m` | Modified flag, shown as `[+]`.                                                                                                                                                                                                                                                                                                                   |
+| `%n` | Buffer number.                                                                                                                                                                                                                                                                                                                                   |
+| `%o` | Byte number in file of byte under cursor, first byte is 1. Mnemonic: Offset from start of file (with one added)                                                                                                                                                                                                                                  |
+| `%p` | Percentage through file by line.                                                                                                                                                                                                                                                                                                                 |
+| `%q` | "[Quickfix List]", "[Location List]" or empty.                                                                                                                                                                                                                                                                                                   |
+| `%r` | Readonly flag, shown as `[RO]`.                                                                                                                                                                                                                                                                                                                  |
+| `%t` | File name (tail) of file in the buffer.                                                                                                                                                                                                                                                                                                          |
+| `%v` | Virtual column number (screen column).                                                                                                                                                                                                                                                                                                           |
+| `%w` | Preview window flag.                                                                                                                                                                                                                                                                                                                             |
+| `%y` | Filetype.                                                                                                                                                                                                                                                                                                                                        |
+| `%y` | Type of file in the buffer, e.g., "[vim]". See 'filetype'.                                                                                                                                                                                                                                                                                       |
+| `%{` | Evaluate expression between "%{" and "}" and substitute result. Note that there is no "%" before the closing "}". The expression cannot contain a "}" character, call a function to work around that. %{ below.                                                                                                                                  |
+| `%}` | End of "{%" expression                                                                                                                                                                                                                                                                                                                           |
+| `(`  | Start of item group. Can be used for setting the width and alignment of a section. Must be followed by %) somewhere.                                                                                                                                                                                                                             |
+| `)`  | End of item group. No width fields allowed.                                                                                                                                                                                                                                                                                                      |
+| `@`  | Start of execute function label. Use %X or %T to end the label, e.g.: %10@SwitchBuffer@foo.c%X. Clicking this label runs the specified function: in the example when clicking once using left mouse button on "foo.c", a SwitchBuffer(10, 1, 'l', ' ') expression will be run. The specified function receives the following arguments in order: |
+| `T`  | For 'tabline': start of tabpage N label. Use %T or %X to end the label. Clicking this label with left mouse button switches to the specified tabpage, while clicking it with middle mouse button closes the specified tabpage.                                                                                                                   |
+| `X`  | For 'tabline': start of close tab N label. Use %X or %T to end the label, e.g.: %3Xclose%X. Use %999X for a "close current tab" label. Clicking this label with left mouse button closes the specified tabpage.                                                                                                                                  |
+| `{%` | This is almost same as "{" except the result of the expression is re-evaluated as a statusline format string. Thus if the return value of expr contains "%" items they will get expanded. The expression can contain the "}" character, the end of expression is denoted by "%}".                                                                |
 
 Example:
 
@@ -695,8 +725,8 @@ Useful variables while evaluating `statuscolumn`:
 | `v:virtnum` | Negative for virtual lines, zero for real buffer lines, positive for wrapped parts. |
 
 The width follows the normal column options such as `numberwidth`, `signcolumn`, and `foldcolumn`.
-It can grow with the evaluated format, but shrinking usually happens only when the line count changes
-or when `statuscolumn` is set again.
+It can grow with the evaluated format, but shrinking usually happens only when the line count
+changes or when `statuscolumn` is set again.
 
 Click handlers with `%@Func@...%T` are supported, but the same function is used for each row in the
 same column. Because `statuscolumn` is evaluated for every visible line, keep expressions cheap.
@@ -721,13 +751,13 @@ Supported mode flags:
 | `a`  | All previous modes.                          |
 | `r`  | Hit-enter and more-prompt prompts.           |
 
-With mouse support enabled, left-click places the cursor, dragging a statusline or vertical separator
-resizes windows, and Visual mode supports double-click word selection, triple-click line selection,
-and quadruple-click block selection. Hold Shift while using the mouse to temporarily bypass Neovim's
-mouse handling in many terminals.
+With mouse support enabled, left-click places the cursor, dragging a statusline or vertical
+separator resizes windows, and Visual mode supports double-click word selection, triple-click line
+selection, and quadruple-click block selection. Hold Shift while using the mouse to temporarily
+bypass Neovim's mouse handling in many terminals.
 
-When mouse support is enabled in a terminal, copy/paste may use the `"*` register if available, so it
-interacts with `clipboard` behavior.
+When mouse support is enabled in a terminal, copy/paste may use the `"*` register if available, so
+it interacts with `clipboard` behavior.
 
 ## Highlight Reference
 
@@ -781,8 +811,8 @@ These groups control the cursor, current line, line numbers, and related editor 
 | `FoldColumn`   | Fold column.                                             |
 | `ColorColumn`  | Columns marked by `colorcolumn`.                         |
 
-Cursor shape is controlled by `guicursor`; these highlight groups only control cursor colors when the
-terminal or UI supports it.
+Cursor shape is controlled by `guicursor`; these highlight groups only control cursor colors when
+the terminal or UI supports it.
 
 Example:
 
@@ -806,8 +836,8 @@ These groups are useful for selections, matched brackets, and highlighted words.
 | `IlluminatedWordRead`   | Read references from illumination-style plugins.      |
 | `IlluminatedWordWrite`  | Write references from illumination-style plugins.     |
 
-This config currently customizes `Visual`, `MatchParen`, `MiniCursorword`,
-`MiniCursorwordCurrent`, and the `IlluminatedWord*` groups.
+This config currently customizes `Visual`, `MatchParen`, `MiniCursorword`, `MiniCursorwordCurrent`,
+and the `IlluminatedWord*` groups.
 
 ### Search
 
@@ -1044,31 +1074,31 @@ Neovim 0.12 defaults.
 
 2. **Check if Neovim 0.12 already has a built-in config** for it:
 
-   ```
-   :echo glob($VIMRUNTIME .. "/lsp/*.lua")
-   ```
+    ```
+    :echo glob($VIMRUNTIME .. "/lsp/*.lua")
+    ```
 
-   or browse `$VIMRUNTIME/lsp/` in your file explorer. If a file exists for your server you may not
-   need step 3 at all.
+    or browse `$VIMRUNTIME/lsp/` in your file explorer. If a file exists for your server you may not
+    need step 3 at all.
 
 3. **Create an override config** (optional but recommended) at
    `config/nvim12/lsp/<server-name>.lua`. Minimal example:
 
-   ```lua
-   return {
-       cmd = { "my-server", "--stdio" },
-       filetypes = { "mylang" },
-       root_markers = { "myproject.json", ".git" },
-   }
-   ```
+    ```lua
+    return {
+        cmd = { "my-server", "--stdio" },
+        filetypes = { "mylang" },
+        root_markers = { "myproject.json", ".git" },
+    }
+    ```
 
 4. **Enable the server** in `config/nvim12/lua/lsp.lua`:
-   ```lua
-   vim.lsp.enable({
-       -- existing servers ...
-       "my-server",   -- add here
-   })
-   ```
+    ```lua
+    vim.lsp.enable({
+        -- existing servers ...
+        "my-server",   -- add here
+    })
+    ```
 
 **Finding servers:**
 

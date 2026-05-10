@@ -1,5 +1,5 @@
 -- Custom statuscolumn: replicates Snacks' layout (sign | number | fold/git)
--- with the single change that all marks are shown as "" instead of the mark letter.
+-- with the single change that all marks are shown as "" instead of the mark letter.
 --
 -- Layout: [sign/mark] [number] [fold/git]
 --   left  = sign or mark (sign takes priority)
@@ -38,7 +38,7 @@ local function buf_signs(buf)
         })
     end
 
-    -- Marks (a-z, A-Z) — always shown as 
+    -- Marks (a-z, A-Z) — always shown as 
     local all_marks = vim.fn.getmarklist(buf)
     vim.list_extend(all_marks, vim.fn.getmarklist())
     for _, mark in ipairs(all_marks) do
@@ -46,7 +46,7 @@ local function buf_signs(buf)
             local lnum = mark.pos[2]
             signs[lnum] = signs[lnum] or {}
             table.insert(signs[lnum], {
-                text     = "",
+                text     = "",
                 texthl   = "StatusColumnMark",
                 priority = 100, -- above regular signs, below nothing special
                 type     = "mark",

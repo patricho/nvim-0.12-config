@@ -46,7 +46,31 @@ require("mini.surround").setup()
 
 -- Scrollbar
 vim.pack.add({ gh("lewis6991/satellite.nvim") })
-require("satellite").setup()
+require("satellite").setup({
+    winblend = 0, -- Transparency
+    handlers = {
+        cursor = {
+            symbols = { '' }
+        },
+    },
+})
+local handlers = require('satellite.handlers')
+-- init() is normally called lazily on first render; call it now so the
+-- builtin handlers (including 'marks') are registered before we patch.
+handlers.init()
+for _, h in ipairs(handlers.handlers) do
+    if h.name == 'marks' then
+        local orig = h.update
+        h.update = function(bufnr, winid)
+            local marks = orig(bufnr, winid)
+            for _, m in ipairs(marks) do
+                m.symbol = ''
+            end
+            return marks
+        end
+        break
+    end
+end
 
 -- Snacks
 vim.pack.add({ gh("folke/snacks.nvim") })
@@ -165,11 +189,12 @@ require("bufferline").setup({
 vim.pack.add({ gh("stevearc/conform.nvim") })
 require("conform").setup({
     format_on_save = {
-        timeout_ms = 1000,
+        timeout_ms = 5000,
         lsp_format = "fallback",
     },
     formatters_by_ft = {
         go = { "goimports", "gofumpt" },
+        markdown = { "prettier" },
         php = { "prettier" },
         -- https://github.com/stevearc/conform.nvim#formatters
     },

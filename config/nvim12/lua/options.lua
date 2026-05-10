@@ -12,6 +12,7 @@ vim.opt.fillchars      = { diff = "╱" }
 vim.opt.guicursor      = "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50" -- Cursor shape
 vim.opt.hlsearch       = true -- Search highlights
 vim.opt.ignorecase     = true -- Case-insensitive search
+vim.opt.inccommand     = "split" -- Substitution preview
 vim.opt.incsearch      = true -- Live search
 vim.opt.list           = true -- Whitespace display
 vim.opt.listchars      = { tab = "» ", trail = "·", nbsp = "␣" } -- Whitespace markers
@@ -28,8 +29,10 @@ vim.opt.splitright     = true -- Right splits
 vim.opt.swapfile       = false -- Swap files
 vim.opt.tabstop        = 4 -- Tab width
 vim.opt.termguicolors  = true -- True color
-vim.opt.textwidth      = 80 -- Text width
+vim.opt.textwidth      = 100 -- Text width
 vim.opt.timeoutlen     = 300 -- Mapping timeout
+vim.opt.title          = true
+vim.opt.titlestring    = vim.fs.basename(vim.fn.getcwd()) .. ":%t" -- Window title
 vim.opt.undofile       = true -- Persistent undo
 vim.opt.updatetime     = 250 -- Idle update delay
 vim.opt.winborder      = "rounded" -- Float borders
@@ -37,7 +40,6 @@ vim.opt.wrap           = false -- Line wrapping
 
 require("vim._core.ui2").enable({}) -- New UI layer
 
-vim.opt.inccommand = "split" -- Substitution preview
 
 -- Diagnostics
 vim.diagnostic.config({

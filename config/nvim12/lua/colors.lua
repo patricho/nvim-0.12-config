@@ -53,8 +53,15 @@ vim.api.nvim_set_hl(0, "IlluminatedWordText", { fg = "#fe8019" })
 vim.api.nvim_set_hl(0, "IlluminatedWordRead", { fg = "#fe8019" })
 vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { fg = "#fe8019", bold = true, underline = true })
 
+-- Statuscolumn mark icon
+vim.api.nvim_set_hl(0, "StatusColumnMark", { fg = "#fe8019" })
+
 -- Scrollbar
-vim.api.nvim_set_hl(0, "SatelliteBar", { bg = "#4C4846" })
+vim.api.nvim_set_hl(0, "SatelliteBackground", { bg = "#202429" })
+vim.api.nvim_set_hl(0, "SatelliteBar", { bg = "#2C3043" })
+vim.api.nvim_set_hl(0, "SatelliteCursor", { fg = "#4C5063" })
+vim.api.nvim_set_hl(0, "SatelliteSearch", { link = "Search" })
+vim.api.nvim_set_hl(0, "SatelliteMark", { link = "StatusColumnMark" })
 
 -- Dropbar breadcrumbs
 vim.api.nvim_set_hl(0, "WinBar", { fg = "#9D8761", bold = false })
@@ -112,6 +119,3 @@ vim.api.nvim_set_hl(0, "DiffAdd", { bg = "#0f4412" })
 vim.api.nvim_set_hl(0, "DiffDelete", { fg = "#962623" })
 vim.api.nvim_set_hl(0, "DiffText", { bg = "#466570" })
 vim.api.nvim_set_hl(0, "DiffChange", { bg = "#25343c" })
-
--- Statuscolumn mark icon
-vim.api.nvim_set_hl(0, "StatusColumnMark", { fg = "#fe8019" })
