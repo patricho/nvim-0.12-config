@@ -53,6 +53,7 @@ vim.pack.add({ gh("folke/snacks.nvim") })
 require("snacks").setup({
     explorer = {},
     lazygit = {},
+    notifier = {},
     picker = {
         sources = {
             git_grep = {
@@ -72,9 +73,9 @@ require("snacks").setup({
         }
     },
     indent = {
-        indent = { char = "│", },
-        animate = { enabled = false, }
-    }
+        indent = { char = "│" },
+        animate = { enabled = false }
+    },
 })
 
 -- Custom statuscolumn

@@ -8,6 +8,12 @@
 --
 -- OR download OmniSharp release: https://github.com/OmniSharp/omnisharp-roslyn/releases
 
+-- Default to static completion for SQL, and disable default keymaps
+-- https://github.com/neovim/neovim/issues/14433#issuecomment-1183682651
+-- https://www.reddit.com/r/vim/comments/2om1ib/comment/cmop4zh/
+vim.g.omni_sql_default_compl_type = "syntax"
+vim.g.omni_sql_no_default_maps = 1
+
 return {
     cmd = function(dispatchers, config)
         return vim.lsp.rpc.start({ 'csharp-ls' }, dispatchers, {
