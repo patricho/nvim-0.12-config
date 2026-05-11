@@ -7,6 +7,7 @@ local feed = function(keys)
 end
 
 local gs = require("gitsigns")
+local wk = require("which-key")
 local marks = require("plugins/marks")
 local diag_current_line = true
 
@@ -33,7 +34,7 @@ map("v", "c", '"_c', "Change without yank")
 map("v", "C", '"_C', "Change without yank")
 
 -- Windows
-require("which-key").add({ { "<leader>W", group = "[W]indows" } })
+wk.add({ { "<leader>W", group = "[W]indows" } })
 map("n", "<C-h>", "<C-w>h", "Window go left")
 map("n", "<C-j>", "<C-w>j", "Window go down")
 map("n", "<C-k>", "<C-w>k", "Window go up")
@@ -53,7 +54,7 @@ map("n", "<leader>c", "<cmd>bdelete<cr>", "[C]lose buffer")
 map("n", "<Leader>C", "<cmd>BufferLineCloseOthers<cr>", "[C]lose all other buffers")
 
 -- Navigation
-require("which-key").add({ { "<leader>n", group = "[N]avigate" } })
+wk.add({ { "<leader>n", group = "[N]avigate" } })
 map("n", "<leader>nq", "<cmd>cnext<cr>", "[N]avigate to next [Q]uickfix")
 map("n", "<leader>nQ", "<cmd>cprev<cr>", "[N]avigate to prev [Q]uickfix")
 map("n", "<leader>nd", function() vim.diagnostic.jump({ count = 1 }) end, "[N]avigate to next [D]iagnostic")
@@ -64,7 +65,7 @@ map("n", "<leader>nm", marks.next, "[N]avigate to next global [M]ark")
 map("n", "<leader>nM", marks.prev, "[N]avigate to prev global [M]ark")
 
 -- Pickers and search
-require("which-key").add({ { "<leader>f", group = "[F]ind" } })
+wk.add({ { "<leader>f", group = "[F]ind" } })
 map("n", "<leader>e", function() Snacks.explorer.reveal() end, "Snacks [E]xplorer")
 map("n", "<leader>F", function() Snacks.picker('git_files') end, "[F]ind [F]iles")
 map("n", "<leader>ff", function() Snacks.picker('git_files') end, "[F]ind [F]iles")
@@ -88,6 +89,8 @@ map("n", "<esc>", "<cmd>nohlsearch<CR>", "Clear search highlights")
 map("n", "-", function() require("flash").jump() end, "Flash jump")
 
 -- Quickfix
+map("n", "<leader>qq", "<cmd>copen<cr>", "[Q]uickfix [O]pen")
+map("n", "<leader>qo", "<cmd>copen<cr>", "[Q]uickfix [O]pen")
 map("n", "<leader>qc", "<cmd>cclose<cr>", "[Q]uickfix [C]lose")
 map("n", "<leader>qj", "<cmd>cnext<cr>", "[Q]uickfix [N]ext item")
 map("n", "<leader>qk", "<cmd>cprev<cr>", "[Q]uickfix [P]rev item")
@@ -120,7 +123,7 @@ map("n", "<leader>ud", function()
 end, "[U]I toggle [D]iagnostic virtual text")
 
 -- Git
-require("which-key").add({
+wk.add({
     { "<leader>g",  group = "[G]it" },
     { "<leader>gb", group = "[G]it [B]lame" },
     { "<leader>gd", group = "[G]it [D]iffview" },
@@ -210,7 +213,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end
 
         -- LSP commands
-        require("which-key").add({ { "<leader>l", group = "[L]SP" } })
+        wk.add({ { "<leader>l", group = "[L]SP" } })
         bmap("n", "<leader>lf", function() vim.lsp.buf.format({ async = true }) end, "[L]SP [F]ormat buffer")
         bmap("n", "<leader>ls", "<cmd>LspStatus<cr>", "[L]SP [S]tatus")
 
