@@ -50,21 +50,21 @@ require("satellite").setup({
     winblend = 0, -- Transparency
     handlers = {
         cursor = {
-            symbols = { '' }
+            symbols = { "" }
         },
     },
 })
-local handlers = require('satellite.handlers')
+local handlers = require("satellite.handlers")
 -- init() is normally called lazily on first render; call it now so the
--- builtin handlers (including 'marks') are registered before we patch.
+-- builtin handlers (including "marks") are registered before we patch.
 handlers.init()
 for _, h in ipairs(handlers.handlers) do
-    if h.name == 'marks' then
+    if h.name == "marks" then
         local orig = h.update
         h.update = function(bufnr, winid)
             local marks = orig(bufnr, winid)
             for _, m in ipairs(marks) do
-                m.symbol = ''
+                m.symbol = ""
             end
             return marks
         end
@@ -198,4 +198,11 @@ require("conform").setup({
         php = { "prettier" },
         -- https://github.com/stevearc/conform.nvim#formatters
     },
+})
+
+-- LSP completions icons
+vim.pack.add({ gh("onsails/lspkind.nvim") })
+require("lspkind").init({
+    mode = "symbol_text",
+    preset = "default",
 })

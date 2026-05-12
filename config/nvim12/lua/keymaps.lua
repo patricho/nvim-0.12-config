@@ -158,14 +158,18 @@ map("n", "<leader>mm", marks.toggle, "[M]arks toggle global [M]ark")
 map("n", "<leader>mc", marks.clear_lower, "[M]arks [C]lear local marks")
 map("n", "<leader>mC", marks.clear_upper, "[M]arks [C]lear global marks")
 
--- Native autocomplete popup navigation
+vim.keymap.set("i", "<c-space>", function()
+        return vim.fn.pumvisible() == 1 and "<C-e>" or "<C-x><C-o>"
+    end,
+    { expr = true, silent = true, desc = "Completion show (ctrl+space)" })
+
 vim.keymap.set("i", "<C-j>", function()
     if vim.fn.pumvisible() == 1 then
         feed("<C-n>")
     else
         feed("<C-j>")
     end
-end, { silent = true, desc = "Completion next (Ctrl-j)" })
+end, { silent = true, desc = "Completion next (ctrl+j)" })
 
 vim.keymap.set("i", "<tab>", function()
     if vim.fn.pumvisible() == 1 then
@@ -173,7 +177,7 @@ vim.keymap.set("i", "<tab>", function()
     else
         feed("<C-j>")
     end
-end, { silent = true, desc = "Completion next (Ctrl-j)" })
+end, { silent = true, desc = "Completion next (ctrl+j)" })
 
 vim.keymap.set("i", "<C-k>", function()
     if vim.fn.pumvisible() == 1 then
@@ -181,7 +185,7 @@ vim.keymap.set("i", "<C-k>", function()
     else
         feed("<C-k>")
     end
-end, { silent = true, desc = "Completion prev (Ctrl-k)" })
+end, { silent = true, desc = "Completion prev (ctrl+k)" })
 
 vim.keymap.set("i", "<s-tab>", function()
     if vim.fn.pumvisible() == 1 then
@@ -189,7 +193,7 @@ vim.keymap.set("i", "<s-tab>", function()
     else
         feed("<C-k>")
     end
-end, { silent = true, desc = "Completion prev (Ctrl-k)" })
+end, { silent = true, desc = "Completion prev (ctrl+k)" })
 
 -- LSP buffer-local keymaps
 vim.api.nvim_create_autocmd("LspAttach", {
