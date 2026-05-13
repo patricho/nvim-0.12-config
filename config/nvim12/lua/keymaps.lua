@@ -151,6 +151,8 @@ map("n", "<leader>gll", function() Snacks.picker("git_log") end, "[G]it [L]og")
 map("n", "<leader>glf", function() Snacks.picker("git_log_file") end, "[G]it [L]og current [F]ile")
 map("n", "<leader>gll", function() Snacks.picker("git_log_line") end, "[G]it [L]og current [L]ine")
 map("v", "<leader>gll", function() Snacks.picker("git_log_line") end, "[G]it [L]og current [L]ine")
+map("n", "<leader>gy", function() require("gitlinker").get_buf_range_url("n") end, "[G]it [Y]ank repo link")
+map("v", "<leader>gy", function() require("gitlinker").get_buf_range_url("v") end, "[G]it [Y]ank repo link")
 -- TODO: Add commands for native diffsplit, diffthis, diffoff
 
 -- Marks

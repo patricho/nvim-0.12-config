@@ -3,3 +3,5 @@ bin/nvim-macos-arm64
 cache
 state
 data
+config/lazygit
+config/linear

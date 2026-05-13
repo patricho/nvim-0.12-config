@@ -114,12 +114,11 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Color schemes
-vim.pack.add({ gh("vague-theme/vague.nvim") })
-require('vague').setup({
-    transparent = true,
-    italic = false,
-})
-vim.cmd.colorscheme("vague")
+vim.pack.add({ gh("ThorstenRhau/token") })
+vim.cmd.colorscheme("token")
+
+-- vim.pack.add({ gh("vague-theme/vague.nvim") })
+-- require('vague').setup({ transparent = true, italic = false })
 
 -- vim.pack.add({ gh("sainnhe/gruvbox-material") })
 -- vim.g.gruvbox_material_enable_italic = true
@@ -205,4 +204,25 @@ vim.pack.add({ gh("onsails/lspkind.nvim") })
 require("lspkind").init({
     mode = "symbol_text",
     preset = "default",
+})
+
+-- Git linker
+vim.pack.add({
+    gh("nvim-lua/plenary.nvim"),
+    gh("ruifm/gitlinker.nvim")
+})
+require("gitlinker").setup({
+    mappings = nil,
+    callbacks = {
+        ["github.com"] = require("gitlinker.hosts").get_github_type_url,
+        ["bitbucket.org"] = require("gitlinker.hosts").get_bitbucket_type_url,
+        ["patrik_bauhn"] = function(url_data)
+            local url = "https://bitbucket.org/" .. url_data.repo .. "/src/" .. url_data.rev .. "/" .. url_data.file
+            if url_data.lstart then
+                url = url .. "#lines-" .. url_data.lstart
+                if url_data.lend then url = url .. ":" .. url_data.lend end
+            end
+            return url
+        end,
+    },
 })

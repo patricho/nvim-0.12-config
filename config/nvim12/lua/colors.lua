@@ -37,7 +37,8 @@ vim.api.nvim_set_hl(0, "Visual", { bg = "#662200" })
 vim.api.nvim_set_hl(0, "YankHighlight", { fg = "#fe8019", bg = "#500f08" })
 
 -- Bracket/parentheses pair matching
-vim.api.nvim_set_hl(0, "MatchParen", { fg = "#fe8019" })
+vim.api.nvim_set_hl(0, "MatchParenCur", { fg = "#fe8019", bg = "#500f08", bold = true })
+vim.api.nvim_set_hl(0, "MatchParen", { fg = "#fe8019", bg = "#500f08", bold = true })
 
 -- Search
 vim.api.nvim_set_hl(0, "Search", { fg = "#d73333" })
@@ -57,9 +58,9 @@ vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { fg = "#fe8019", bold = true, un
 vim.api.nvim_set_hl(0, "StatusColumnMark", { fg = "#fe8019" })
 
 -- Scrollbar
-vim.api.nvim_set_hl(0, "SatelliteBackground", { bg = "#202429" })
-vim.api.nvim_set_hl(0, "SatelliteBar", { bg = "#2C3043" })
-vim.api.nvim_set_hl(0, "SatelliteCursor", { fg = "#4C5063" })
+vim.api.nvim_set_hl(0, "SatelliteBackground", { bg = "#222222" })
+vim.api.nvim_set_hl(0, "SatelliteBar", { bg = "#333333" })
+vim.api.nvim_set_hl(0, "SatelliteCursor", { fg = "#eeeeee" })
 vim.api.nvim_set_hl(0, "SatelliteSearch", { link = "Search" })
 vim.api.nvim_set_hl(0, "SatelliteMark", { link = "StatusColumnMark" })
 
@@ -68,14 +69,14 @@ vim.api.nvim_set_hl(0, "WinBar", { fg = "#9D8761", bold = false })
 vim.api.nvim_set_hl(0, "DropBarKindFile", { bold = true })
 
 -- Bufferline/statusline default styling
-vim.api.nvim_set_hl(0, "StatusLineMain", { bg = "#2C3043", fg = "#838C9C" })
-vim.api.nvim_set_hl(0, "StatusLineDimmed", { bg = "#2C3043", fg = "#636C7C" })
+vim.api.nvim_set_hl(0, "StatusLineMain", { bg = "#222222", fg = "#838C9C" })
+vim.api.nvim_set_hl(0, "StatusLineDimmed", { bg = "#222222", fg = "#636C7C" })
 
 -- Bufferline
 vim.api.nvim_set_hl(0, "BufferLineTabInactive", { link = "StatusLineMain" })
 vim.api.nvim_set_hl(0, "BufferLineTab", { link = "StatusLineMain" })
-vim.api.nvim_set_hl(0, "BufferLineTabSelected", { bg = "#3C4053", fg = "#eeeeee" })
-vim.api.nvim_set_hl(0, "BufferLineIndicatorSelected", { bg = "#3C4053", fg = "#636C7C" })
+vim.api.nvim_set_hl(0, "BufferLineTabSelected", { bg = "#333333", fg = "#eeeeee" })
+vim.api.nvim_set_hl(0, "BufferLineIndicatorSelected", { bg = "#333333", fg = "#636C7C" })
 vim.api.nvim_set_hl(0, "BufferLineSeparatorInactive", { link = "StatusLineMain" })
 vim.api.nvim_set_hl(0, "BufferLineFill", { link = "StatusLineMain" })
 vim.api.nvim_set_hl(0, "BufferLineBackground", { link = "StatusLineMain" })
@@ -87,7 +88,6 @@ vim.api.nvim_set_hl(0, "BufferLineCloseButtonSelected", { link = "BufferLineIndi
 vim.api.nvim_set_hl(0, "BufferLineModified", { link = "StatusLineDimmed" })
 vim.api.nvim_set_hl(0, "BufferLineModifiedVisible", { link = "StatusLineDimmed" })
 vim.api.nvim_set_hl(0, "BufferLineModifiedSelected", { link = "BufferLineIndicatorSelected" })
-
 local function set_bufferline_devicon_backgrounds()
     local statusline_main = vim.api.nvim_get_hl(0, { name = "StatusLineMain", link = false })
     local bufferline_selected = vim.api.nvim_get_hl(0, { name = "BufferLineTabSelected", link = false })
@@ -101,9 +101,6 @@ local function set_bufferline_devicon_backgrounds()
         })
     end
 end
-
-set_bufferline_devicon_backgrounds()
-
 vim.api.nvim_create_autocmd("ColorScheme", {
     callback = set_bufferline_devicon_backgrounds,
 })
@@ -113,9 +110,14 @@ vim.api.nvim_create_autocmd("VimEnter", {
         vim.schedule(set_bufferline_devicon_backgrounds)
     end,
 })
+set_bufferline_devicon_backgrounds()
 
 -- Git diff
 vim.api.nvim_set_hl(0, "DiffAdd", { bg = "#0f4412" })
 vim.api.nvim_set_hl(0, "DiffDelete", { fg = "#962623" })
 vim.api.nvim_set_hl(0, "DiffText", { bg = "#466570" })
 vim.api.nvim_set_hl(0, "DiffChange", { bg = "#25343c" })
+
+-- Transparent background
+extend_highlight("Normal", "Normal", { bg = "none" })
+extend_highlight("LineNr", "LineNr", { bg = "none" })
