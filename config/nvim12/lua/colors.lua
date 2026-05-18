@@ -8,6 +8,9 @@ local function extend_highlight(from, to, overrides)
     return true
 end
 
+-- Completion popup
+vim.api.nvim_set_hl(0, "PmenuKind", { fg = "#666666" })
+
 -- Highlight word under cursor
 vim.api.nvim_set_hl(0, "MiniCursorwordCurrent", { bg = "#702020" })
 vim.api.nvim_set_hl(0, "MiniCursorword", { bg = "#502020" })
@@ -58,59 +61,27 @@ vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { fg = "#fe8019", bold = true, un
 vim.api.nvim_set_hl(0, "StatusColumnMark", { fg = "#fe8019" })
 
 -- Scrollbar
-vim.api.nvim_set_hl(0, "SatelliteBackground", { bg = "#222222" })
+vim.api.nvim_set_hl(0, "SatelliteBackground", { bg = "none" })
 vim.api.nvim_set_hl(0, "SatelliteBar", { bg = "#333333" })
 vim.api.nvim_set_hl(0, "SatelliteCursor", { fg = "#eeeeee" })
 vim.api.nvim_set_hl(0, "SatelliteSearch", { link = "Search" })
-vim.api.nvim_set_hl(0, "SatelliteMark", { link = "StatusColumnMark" })
+vim.api.nvim_set_hl(0, "SatelliteMark", { fg = "#fe8019", bg = "#333333" })
+vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
+vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
 
 -- Dropbar breadcrumbs
-vim.api.nvim_set_hl(0, "WinBar", { fg = "#9D8761", bold = false })
+vim.api.nvim_set_hl(0, "WinBar", { fg = "#9D8761", bg = "#262624", bold = false })
 vim.api.nvim_set_hl(0, "DropBarKindFile", { bold = true })
 
 -- Bufferline/statusline default styling
-vim.api.nvim_set_hl(0, "StatusLineMain", { bg = "#222222", fg = "#838C9C" })
-vim.api.nvim_set_hl(0, "StatusLineDimmed", { bg = "#222222", fg = "#636C7C" })
+vim.api.nvim_set_hl(0, "StatusLineMain", { bg = "#141413", fg = "#838C9C" })
+vim.api.nvim_set_hl(0, "StatusLineDimmed", { bg = "#141413", fg = "#636C7C" })
 
 -- Bufferline
-vim.api.nvim_set_hl(0, "BufferLineTabInactive", { link = "StatusLineMain" })
-vim.api.nvim_set_hl(0, "BufferLineTab", { link = "StatusLineMain" })
-vim.api.nvim_set_hl(0, "BufferLineTabSelected", { bg = "#333333", fg = "#eeeeee" })
-vim.api.nvim_set_hl(0, "BufferLineIndicatorSelected", { bg = "#333333", fg = "#636C7C" })
-vim.api.nvim_set_hl(0, "BufferLineSeparatorInactive", { link = "StatusLineMain" })
-vim.api.nvim_set_hl(0, "BufferLineFill", { link = "StatusLineMain" })
-vim.api.nvim_set_hl(0, "BufferLineBackground", { link = "StatusLineMain" })
-vim.api.nvim_set_hl(0, "BufferLineSeparator", { link = "StatusLineDimmed" })
-vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { link = "BufferLineTabSelected" })
-vim.api.nvim_set_hl(0, "BufferLineCloseButton", { link = "StatusLineDimmed" })
-vim.api.nvim_set_hl(0, "BufferLineCloseButtonVisible", { link = "StatusLineDimmed" })
-vim.api.nvim_set_hl(0, "BufferLineCloseButtonSelected", { link = "BufferLineIndicatorSelected" })
-vim.api.nvim_set_hl(0, "BufferLineModified", { link = "StatusLineDimmed" })
-vim.api.nvim_set_hl(0, "BufferLineModifiedVisible", { link = "StatusLineDimmed" })
-vim.api.nvim_set_hl(0, "BufferLineModifiedSelected", { link = "BufferLineIndicatorSelected" })
-local function set_bufferline_devicon_backgrounds()
-    local statusline_main = vim.api.nvim_get_hl(0, { name = "StatusLineMain", link = false })
-    local bufferline_selected = vim.api.nvim_get_hl(0, { name = "BufferLineTabSelected", link = false })
-
-    for _, name in ipairs(vim.fn.getcompletion("DevIcon", "highlight")) do
-        extend_highlight(name, name, { bg = statusline_main.bg })
-    end
-    for _, name in ipairs(vim.fn.getcompletion("BufferLineDevIcon", "highlight")) do
-        extend_highlight(name, name, {
-            bg = name:match("Selected$") and bufferline_selected.bg or statusline_main.bg,
-        })
-    end
-end
-vim.api.nvim_create_autocmd("ColorScheme", {
-    callback = set_bufferline_devicon_backgrounds,
-})
-vim.api.nvim_create_autocmd("VimEnter", {
-    once = true,
-    callback = function()
-        vim.schedule(set_bufferline_devicon_backgrounds)
-    end,
-})
-set_bufferline_devicon_backgrounds()
+-- extend_highlight("BufferLineFill", "BufferLineFill", { bg = "#222222" })
+-- extend_highlight("BufferLineSeparator", "BufferLineSeparator", { fg = "#222222" })
+-- extend_highlight("BufferLineSeparatorSelected", "BufferLineSeparatorSelected", { fg = "#222222" })
 
 -- Git diff
 vim.api.nvim_set_hl(0, "DiffAdd", { bg = "#0f4412" })

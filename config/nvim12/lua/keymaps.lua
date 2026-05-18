@@ -53,6 +53,8 @@ map("n", "<tab>", "<cmd>bnext<cr>", "Next buffer")
 map("n", "<leader>w", "<cmd>write<cr>", "[W]rite buffer")
 map("n", "<leader>c", "<cmd>bdelete<cr>", "[C]lose buffer")
 map("n", "<Leader>C", "<cmd>BufferLineCloseOthers<cr>", "[C]lose all other buffers")
+map("n", "<Leader>bb", "<cmd>BufferLinePick<cr>", "[B]ufferline pick [B]uffer")
+map("n", "<Leader>bp", "<cmd>BufferLineTogglePin<cr>", "[B]ufferline toggle [P]in")
 
 -- Navigation
 wk.add({ { "<leader>n", group = "[N]avigate" } })

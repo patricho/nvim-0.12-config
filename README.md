@@ -137,6 +137,209 @@ needed.
 | [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)          | Status line                                        |
 | [bufferline.nvim](https://github.com/akinsho/bufferline.nvim)         | Buffer tab line                                    |
 
+## Statusline Separator Glyphs
+
+If you are customizing `lualine.nvim`, `bufferline.nvim`, winbars, or tablines, separator glyphs are
+usually the fastest way to change the feel of the UI.
+
+The best-looking separators typically come from the Powerline or Nerd Fonts ecosystem rather than
+plain Unicode alone. If a glyph renders as an empty square, looks vertically misaligned, or has odd
+spacing, the terminal font usually does not support it cleanly.
+
+### Good places to browse separator glyphs
+
+1. [Nerd Fonts cheat sheet](https://www.nerdfonts.com/cheat-sheet)
+2. [Unicode Explorer](https://unicode-explorer.com/)
+3. [Compart Unicode search](https://www.compart.com/en/unicode/)
+4. [FileFormat Unicode character search](https://www.fileformat.info/info/unicode/char/search.htm)
+5. [Powerline symbols reference](https://github.com/powerline/powerline/blob/develop/font/PowerlineSymbols.otf?raw=1)
+
+Useful Unicode blocks to explore:
+
+- Box Drawing
+- Block Elements
+- Geometric Shapes
+- Miscellaneous Symbols
+- Supplemental Arrows
+- Powerline / Nerd Font private-use glyphs
+
+### Curated separator glyphs for Neovim
+
+These tend to work well in statuslines, winbars, tablines, and small inline separators when using a
+Nerd Font.
+
+#### Best bets
+
+```lua
+-- Powerline-style
+'' '' '' '' '' ''
+
+-- Simple solid separators
+'█' '▊' '▋' '▌' '▍' '▎' '▏'
+
+-- Thin verticals
+'│' '┃' '┆' '┊'
+
+-- Triangles / wedges
+'▶' '▷' '◀' '◁'
+'◢' '◣' '◤' '◥'
+
+-- Slants
+'╱' '╲' '╳'
+
+-- Fill / soft texture
+'░' '▒' '▓'
+```
+
+#### What they are good for
+
+1. Seamless colored segment joins
+
+   ```lua
+   left  = ''
+   right = ''
+   ```
+
+2. Arrow-like transitions between sections
+
+   ```lua
+   left  = ''
+   right = ''
+   ```
+
+3. Sharper, more angular transitions
+
+   ```lua
+   left  = ''
+   right = ''
+   ```
+
+4. Minimal separators that do not dominate
+
+   ```lua
+   left  = '│'
+   right = '│'
+   ```
+
+5. Chunky or dense separators
+
+   ```lua
+   left  = '▐'
+   right = '▌'
+   ```
+
+6. Decorative diagonal style
+
+   ```lua
+   left  = '╱'
+   right = '╲'
+   ```
+
+#### Ready-made pairs
+
+```lua
+-- Classic powerline
+section_separators = { left = '', right = '' }
+
+-- Arrow transition
+section_separators = { left = '', right = '' }
+
+-- Sharp angled
+section_separators = { left = '', right = '' }
+
+-- Minimal clean
+section_separators = { left = '', right = '│' }
+
+-- Heavy block
+section_separators = { left = '▐', right = '▌' }
+
+-- Soft rounded-ish feel
+section_separators = { left = '', right = '' }
+component_separators = { left = '', right = '' }
+```
+
+#### Good component separators
+
+For smaller separators inside a section, these usually read better than the larger Powerline glyphs:
+
+```lua
+'│' '┆' '┊' '•' '·' '⋅' '›' '»'
+'' ''
+```
+
+Examples:
+
+```lua
+component_separators = { left = '│', right = '│' }
+```
+
+```lua
+component_separators = { left = '', right = '' }
+```
+
+#### Recommended sets by style
+
+1. Clean and modern
+
+   ```lua
+   section_separators   = { left = '', right = '' }
+   component_separators = { left = '│', right = '│' }
+   ```
+
+2. Sharp and high-contrast
+
+   ```lua
+   section_separators   = { left = '', right = '' }
+   component_separators = { left = '▏', right = '▕' }
+   ```
+
+3. Minimal
+
+   ```lua
+   section_separators   = { left = '', right = '' }
+   component_separators = { left = '·', right = '·' }
+   ```
+
+4. Classic Powerline
+
+   ```lua
+   section_separators   = { left = '', right = '' }
+   component_separators = { left = '', right = '' }
+   ```
+
+#### Less obvious but useful accents
+
+```lua
+'▂' '▃' '▄' '▅' '▆' '▇'
+'═' '━'
+'╭' '╮' '╰' '╯'
+'⟫' '⟪'
+'❯' '❮'
+```
+
+These are more decorative than structural separators, but they can work well if the rest of the UI
+is already visually bold.
+
+#### Practical advice
+
+1. Prefer Powerline or Nerd Font glyphs for main section separators.
+2. Prefer standard Unicode like `│`, `•`, and `▏` for component separators.
+3. Test both focused and unfocused windows because contrast changes how separators read.
+4. Watch for width and alignment issues. Some glyphs render inconsistently across terminals.
+5. If a glyph looks slightly off, test another terminal before discarding it; rendering varies
+   between Kitty, WezTerm, iTerm2, Alacritty, and others.
+
+#### Shortlist
+
+If you just want a small set of high-value options to try first:
+
+```lua
+'' '' '' '' '' ''
+'' '' '' ''
+'│' '▏' '▕' '•'
+'◢' '◣' '◤' '◥'
+```
+
 ## Built-in Diff Mode Quickstart
 
 This config also installs `diffview.nvim`, but that plugin builds on Neovim's built-in diff mode
@@ -526,6 +729,25 @@ Useful insert-mode commands:
 So if you want to force completion to appear in Insert mode, use `<C-n>` or `<C-p>`. In this config,
 `<C-j>` and `<C-k>` are also wired to those same popup-navigation commands when the completion menu
 is already visible.
+
+#### Popup window borders
+
+```lua
+vim.opt.winborder = "rounded"
+```
+
+Possible values for the border option:
+
+| Value     | Description                                                                                                                           |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| "bold"    | Bold line box                                                                                                                         |
+| "double"  | Double-line box                                                                                                                       |
+| "none"    | No border                                                                                                                             |
+| "rounded" | Like "single", but with rounded corners ("╭" etc.)                                                                                    |
+| "shadow"  | Drop shadow effect, by blending with the background                                                                                   |
+| "single"  | Single-line box                                                                                                                       |
+| "solid"   | Adds padding by a single whitespace cell                                                                                              |
+| custom    | comma-separated list of exactly 8 characters in clockwise order starting from topleft. Example: `vim.o.winborder='+,-,+,\|,+,-,+,\|'` |
 
 ### PHP completion note
 
@@ -1074,31 +1296,31 @@ Neovim 0.12 defaults.
 
 2. **Check if Neovim 0.12 already has a built-in config** for it:
 
-    ```
-    :echo glob($VIMRUNTIME .. "/lsp/*.lua")
-    ```
+   ```
+   :echo glob($VIMRUNTIME .. "/lsp/*.lua")
+   ```
 
-    or browse `$VIMRUNTIME/lsp/` in your file explorer. If a file exists for your server you may not
-    need step 3 at all.
+   or browse `$VIMRUNTIME/lsp/` in your file explorer. If a file exists for your server you may not
+   need step 3 at all.
 
 3. **Create an override config** (optional but recommended) at
    `config/nvim12/lsp/<server-name>.lua`. Minimal example:
 
-    ```lua
-    return {
-        cmd = { "my-server", "--stdio" },
-        filetypes = { "mylang" },
-        root_markers = { "myproject.json", ".git" },
-    }
-    ```
+   ```lua
+   return {
+       cmd = { "my-server", "--stdio" },
+       filetypes = { "mylang" },
+       root_markers = { "myproject.json", ".git" },
+   }
+   ```
 
 4. **Enable the server** in `config/nvim12/lua/lsp.lua`:
-    ```lua
-    vim.lsp.enable({
-        -- existing servers ...
-        "my-server",   -- add here
-    })
-    ```
+   ```lua
+   vim.lsp.enable({
+       -- existing servers ...
+       "my-server",   -- add here
+   })
+   ```
 
 **Finding servers:**
 
