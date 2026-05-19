@@ -84,6 +84,10 @@
       "rev": "147af4e49f51dd48f41972de26552872b8ba7b25",
       "src": "https://github.com/rachartier/tiny-inline-diagnostic.nvim"
     },
+    "todo-comments.nvim": {
+      "rev": "31e3c38ce9b29781e4422fc0322eb0a21f4e8668",
+      "src": "https://github.com/folke/todo-comments.nvim"
+    },
     "token": {
       "rev": "51f39cbbb7154e08741de07996b34baf98703bdf",
       "src": "https://github.com/ThorstenRhau/token"

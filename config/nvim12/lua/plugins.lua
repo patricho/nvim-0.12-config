@@ -154,6 +154,7 @@ require("conform").setup({
         go = { "goimports", "gofumpt" },
         markdown = { "prettier" },
         php = { "prettier" },
+        twig = { "prettier" },
         -- https://github.com/stevearc/conform.nvim#formatters
     },
 })
@@ -185,3 +186,7 @@ require("gitlinker").setup({
         end,
     },
 })
+
+-- Todo comments
+vim.pack.add({ gh("folke/todo-comments.nvim") })
+require("todo-comments").setup()

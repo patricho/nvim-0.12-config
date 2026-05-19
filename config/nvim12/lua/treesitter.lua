@@ -1,10 +1,13 @@
 local parsers = {
+    "css",
     "go",
+    "html",
     "javascript",
     "json",
     "lua",
     "php",
     "rust",
+    "twig",
     "typescript",
     "yaml",
     "zig",
