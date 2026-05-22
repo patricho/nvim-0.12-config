@@ -512,6 +512,37 @@ Main help topics:
 | `:help copy-diffs`   | `:diffget`, `:diffput`, `do`, and `dp`. |
 | `:help diffopt`      | Diff display and algorithm options.     |
 
+## EasyAlign
+
+This config uses [vim-easy-align](https://github.com/junegunn/vim-easy-align) for alignment. The
+relevant mapping is simply `gA` (**g**o **a**lign) in visual mode, followed by a pattern and
+options.
+
+Note that all options need to be in a single unbroken shorthand string, or in longform JSON format.
+
+**Example:** `vipgA*/sep/arv/skip/` selects a paragraph, aligns on all occurences of "sep", aligned
+to the right, but not on rows containing "skip".
+
+### Common alignment rules
+
+| Command                                | Meaning                                                                                             |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `:EasyAlign *,`                        | All commas — certain delimiters like `,`, `=`, `:`, ` `, etc. are predefined and don't need a regex |
+| `:EasyAlign /regex/`                   | Align on the **first** occurrence of "regex" per line                                               |
+| `:EasyAlign */regex/ g/function/`      | All occurrences of "regex" but only on lines containing "function"                                  |
+| `:EasyAlign */regex/ v/function/`      | All occurrences of "regex" but only on lines **not** containing "function"                          |
+| `:EasyAlign */regex/l0r0`              | All occurrences, with **0 spaces padding** left and right (default is 1)                            |
+| `:EasyAlign */regex/{'l':'(','r':')'}` | All occurrences, with `(` as padding before and `)` after                                           |
+| `:EasyAlign */regex/al`                | All occurrences, aligned to the left (default)                                                      |
+| `:EasyAlign */regex/arl`               | All occurrences, aligned to the right and left (and repeated as needed)                             |
+| `:EasyAlign */regex/arrrlc`            | All occurrences, aligned to the right, right, right, left, center (and repeated as needed)          |
+| `:EasyAlign */regex/l0r0arg/include/`  | Padding, alignment and global filter combined - all options must be combined into a single string   |
+
+The `*` prefix means "all occurrences on each line"; without it, only the first match per line is
+aligned. The `g/pattern/` filter includes lines and `v/pattern/` excludes. Padding modifiers (`l`,
+`r`, and their gutter style equivalents) control the spacing around alignment delimiters. See
+`:help easy-align` for the full syntax.
+
 ## Option Reference
 
 The main editor options live in `config/nvim12/lua/options.lua`. That file keeps comments short so
