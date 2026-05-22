@@ -96,6 +96,10 @@
       "rev": "fd58046b9d64259d9785e4aeb6d6f494c6943cad",
       "src": "https://github.com/vague-theme/vague.nvim"
     },
+    "vim-easy-align": {
+      "rev": "9815a55dbcd817784458df7a18acacc6f82b1241",
+      "src": "https://github.com/junegunn/vim-easy-align"
+    },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",
       "src": "https://github.com/folke/which-key.nvim"

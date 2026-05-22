@@ -190,3 +190,7 @@ require("gitlinker").setup({
 -- Todo comments
 vim.pack.add({ gh("folke/todo-comments.nvim") })
 require("todo-comments").setup()
+
+-- Easy align
+vim.pack.add({ gh("junegunn/vim-easy-align") })
+vim.g.easy_align_ignore_groups = {} -- { 'Comment', 'String' }

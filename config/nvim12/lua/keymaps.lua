@@ -163,6 +163,9 @@ map("n", "<leader>mm", marks.toggle, "[M]arks toggle global [M]ark")
 map("n", "<leader>mc", marks.clear_lower, "[M]arks [C]lear local marks")
 map("n", "<leader>mC", marks.clear_upper, "[M]arks [C]lear global marks")
 
+-- Easy align
+map("x", "gA", ":EasyAlign ", "[G]o [A]lign using [P]attern")
+
 vim.keymap.set("i", "<c-space>", function()
         return vim.fn.pumvisible() == 1 and "<C-e>" or "<C-x><C-o>"
     end,
