@@ -33,6 +33,8 @@ map("v", "Ö", '"8y"8P', "Duplicate selected lines")
 map("v", "p", '"_dP', "Paste over selection without yanking")
 map("v", "c", '"_c', "Change without yank")
 map("v", "C", '"_C', "Change without yank")
+map("v", "<", "<gv", "Outdent and stay in visual mode")
+map("v", ">", ">gv", "Indent and stay in visual mode")
 
 -- Windows
 wk.add({ { "<leader>W", group = "[W]indows" } })
