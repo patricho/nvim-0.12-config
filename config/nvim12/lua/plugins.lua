@@ -2,29 +2,33 @@ local gh = function(p)
     return "https://github.com/" .. p
 end
 
+local ghv = function(p, v)
+    return { src = gh(p), version = v }
+end
+
 -- Treesitter
-vim.pack.add({ gh("nvim-treesitter/nvim-treesitter") })
+vim.pack.add({ ghv("nvim-treesitter/nvim-treesitter", "4916d6592ede8c07973490d9322f187e07dfefac") })
 
 -- Git diff view
-vim.pack.add({ gh("sindrets/diffview.nvim") })
+vim.pack.add({ ghv("sindrets/diffview.nvim", "4516612fe98ff56ae0415a259ff6361a89419b0a") })
 
 -- Fzf pickers
-vim.pack.add({ gh("ibhagwan/fzf-lua") })
+vim.pack.add({ ghv("ibhagwan/fzf-lua", "97376e364f51f1b5ae3efaa3eb2e929430ca8419") })
 
 -- WhichKey keymap help
-vim.pack.add({ gh("folke/which-key.nvim") })
+vim.pack.add({ ghv("folke/which-key.nvim", "3aab2147e74890957785941f0c1ad87d0a44c15a") })
 
 -- Dropbar breadcrumbs
-vim.pack.add({ gh("Bekaboo/dropbar.nvim") })
+vim.pack.add({ ghv("Bekaboo/dropbar.nvim", "f0a42bd92aa647e44221397723453403f5e20f16") })
 
 -- Custom marks commands
 require("plugins/marks")
 
 -- Icons
-vim.pack.add({ gh("nvim-tree/nvim-web-devicons") })
+vim.pack.add({ ghv("nvim-tree/nvim-web-devicons", "2795c26c916bb3c57dde308b82be51971fa92747") })
 
 -- Git gutter signs, statusline blame
-vim.pack.add({ gh("lewis6991/gitsigns.nvim") })
+vim.pack.add({ ghv("lewis6991/gitsigns.nvim", "dd3f588bacbeb041be6facf1742e42097f62165d") })
 require("gitsigns").setup({
     current_line_blame = true,
     current_line_blame_opts = {
@@ -34,18 +38,18 @@ require("gitsigns").setup({
 })
 
 -- Flash jump
-vim.pack.add({ gh("folke/flash.nvim") })
+vim.pack.add({ ghv("folke/flash.nvim", "fcea7ff883235d9024dc41e638f164a450c14ca2") })
 
 -- Mini cursor word highlight
-vim.pack.add({ gh("nvim-mini/mini.cursorword") })
+vim.pack.add({ ghv("nvim-mini/mini.cursorword", "52eacb10266b8ce07c052e3c80a706d29eb74006") })
 require("mini.cursorword").setup({ delay = 50 })
 
 -- Mini surround
-vim.pack.add({ gh("nvim-mini/mini.surround") })
+vim.pack.add({ ghv("nvim-mini/mini.surround", "990ce30f724d08e79670107de6b915a3f1bb9a9b") })
 require("mini.surround").setup()
 
 -- Scrollbar
-vim.pack.add({ gh("lewis6991/satellite.nvim") })
+vim.pack.add({ ghv("lewis6991/satellite.nvim", "87843c9c8f28b54332497302de380a6d94c9e82b") })
 require("satellite").setup({
     winblend = 0, -- Transparency
     handlers = {
@@ -73,7 +77,7 @@ for _, h in ipairs(handlers.handlers) do
 end
 
 -- Snacks
-vim.pack.add({ gh("folke/snacks.nvim") })
+vim.pack.add({ ghv("folke/snacks.nvim", "ad9ede6a9cddf16cedbd31b8932d6dcdee9b716e") })
 require("snacks").setup({
     explorer = {},
     lazygit = {},
@@ -114,7 +118,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Color schemes
-vim.pack.add({ gh("ThorstenRhau/token") })
+vim.pack.add({ ghv("ThorstenRhau/token", "51f39cbbb7154e08741de07996b34baf98703bdf") })
 vim.cmd.colorscheme("token")
 
 -- vim.pack.add({ gh("vague-theme/vague.nvim") })
@@ -126,12 +130,12 @@ vim.cmd.colorscheme("token")
 -- vim.cmd.colorscheme("gruvbox-material")
 
 -- Lualine status line
-vim.pack.add({ gh("nvim-lualine/lualine.nvim") })
+vim.pack.add({ ghv("nvim-lualine/lualine.nvim", "131a558e13f9f28b15cd235557150ccb23f89286") })
 require("plugins/lualine")
 
 -- Bufferline
 -- https://github.com/akinsho/bufferline.nvim/blob/main/doc/bufferline.txt#L827
-vim.pack.add({ gh("akinsho/bufferline.nvim") })
+vim.pack.add({ ghv("akinsho/bufferline.nvim", "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3") })
 local bl = require("bufferline")
 bl.setup({
     options = {
@@ -144,7 +148,7 @@ bl.setup({
 })
 
 -- Conform formatter
-vim.pack.add({ gh("stevearc/conform.nvim") })
+vim.pack.add({ ghv("stevearc/conform.nvim", "dca1a190aa85f9065979ef35802fb77131911106") })
 require("conform").setup({
     format_on_save = {
         timeout_ms = 5000,
@@ -160,7 +164,7 @@ require("conform").setup({
 })
 
 -- LSP completions icons
-vim.pack.add({ gh("onsails/lspkind.nvim") })
+vim.pack.add({ ghv("onsails/lspkind.nvim", "c7274c48137396526b59d86232eabcdc7fed8a32") })
 require("lspkind").init({
     mode = "symbol_text",
     preset = "default",
@@ -168,8 +172,8 @@ require("lspkind").init({
 
 -- Git linker
 vim.pack.add({
-    gh("nvim-lua/plenary.nvim"),
-    gh("ruifm/gitlinker.nvim")
+    ghv("nvim-lua/plenary.nvim", "74b06c6c75e4eeb3108ec01852001636d85a932b"),
+    ghv("ruifm/gitlinker.nvim", "cc59f732f3d043b626c8702cb725c82e54d35c25")
 })
 require("gitlinker").setup({
     mappings = nil,
@@ -188,9 +192,9 @@ require("gitlinker").setup({
 })
 
 -- Todo comments
-vim.pack.add({ gh("folke/todo-comments.nvim") })
+vim.pack.add({ ghv("folke/todo-comments.nvim", "31e3c38ce9b29781e4422fc0322eb0a21f4e8668") })
 require("todo-comments").setup()
 
 -- Easy align
-vim.pack.add({ gh("junegunn/vim-easy-align") })
+vim.pack.add({ ghv("junegunn/vim-easy-align", "9815a55dbcd817784458df7a18acacc6f82b1241") })
 vim.g.easy_align_ignore_groups = {} -- { 'Comment', 'String' }
