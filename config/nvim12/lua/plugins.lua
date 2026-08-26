@@ -155,7 +155,7 @@ require("conform").setup({
         lsp_format = "fallback",
     },
     formatters_by_ft = {
-        go = { "goimports", "gofumpt" },
+        go = { "goimports", "golines", "gofumpt" },
         markdown = { "prettier" },
         php = { "prettier" },
         twig = { "prettier" },
