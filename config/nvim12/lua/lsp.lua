@@ -24,7 +24,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
         -- Enable LSP completions
         if client:supports_method("textDocument/completion") then
-            vim.lsp.completion.enable(true, client.id, buf, { autotrigger = true })
+            local colorful = require("colorful-menu")
+            local kinds = vim.lsp.protocol.CompletionItemKind
+            vim.lsp.completion.enable(true, client.id, buf, {
+                autotrigger = true,
+                convert = function(item)
+                    -- colorful-menu colors the label; lspkind still supplies the kind icon.
+                    local h = colorful.native_completion_highlight(item, client)
+                    local abbr = item.label:gsub("%b()", ""):gsub("%b{}", ""):match("[%w_.]+.*") or item.label
+                    return {
+                        abbr = abbr,
+                        abbr_hlgroup = h and h.highlights or nil,
+                        label = h and h.label or item.label,
+                        kind = require("lspkind").symbolic(kinds[item.kind] or "Text", { mode = "symbol" }),
+                    }
+                end,
+            })
         end
 
         -- Highlight symbol references under the cursor

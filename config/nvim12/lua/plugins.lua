@@ -170,6 +170,10 @@ require("lspkind").init({
     preset = "default",
 })
 
+-- Treesitter-highlighted completion labels. Wired into vim.lsp.completion in lsp.lua.
+vim.pack.add({ ghv("xzbdmw/colorful-menu.nvim", "196ddf16d5f8fec09ba7f20e6b153aa5188e907b") })
+require("colorful-menu").setup({})
+
 -- Git linker
 vim.pack.add({
     ghv("nvim-lua/plenary.nvim", "74b06c6c75e4eeb3108ec01852001636d85a932b"),

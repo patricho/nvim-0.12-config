@@ -10,6 +10,8 @@ end
 
 -- Completion popup
 vim.api.nvim_set_hl(0, "PmenuKind", { fg = "#666666" })
+vim.api.nvim_set_hl(0, "PmenuMatch", { bold = true })
+vim.api.nvim_set_hl(0, "PmenuMatchSel", { bold = true, bg = vim.api.nvim_get_hl(0, { name = "PmenuSel" }).bg })
 
 -- Highlight word under cursor
 vim.api.nvim_set_hl(0, "MiniCursorwordCurrent", { bg = "#702020" })
