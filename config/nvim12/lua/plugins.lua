@@ -30,6 +30,7 @@ vim.pack.add({ ghv("nvim-tree/nvim-web-devicons", "2795c26c916bb3c57dde308b82be5
 -- Git gutter signs, statusline blame
 vim.pack.add({ ghv("lewis6991/gitsigns.nvim", "dd3f588bacbeb041be6facf1742e42097f62165d") })
 require("gitsigns").setup({
+    attach_to_untracked = true,
     current_line_blame = true,
     current_line_blame_opts = {
         delay = 250,
@@ -159,9 +160,16 @@ require("conform").setup({
         markdown = { "prettier" },
         php = { "prettier" },
         twig = { "prettier" },
+        javascript = { "prettier" },
         -- https://github.com/stevearc/conform.nvim#formatters
     },
 })
+
+-- textwidth follows the project's .prettierrc printWidth
+require("plugins/prettier-textwidth")
+
+-- Override gq to bypass LSP-hijacked formatexpr
+require("plugins/reflow")
 
 -- LSP completions icons
 vim.pack.add({ ghv("onsails/lspkind.nvim", "c7274c48137396526b59d86232eabcdc7fed8a32") })

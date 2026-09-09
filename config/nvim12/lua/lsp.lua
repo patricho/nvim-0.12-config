@@ -11,6 +11,7 @@ vim.lsp.enable({
     "lua_ls",
     "csharp_ls",
     "phpactor",
+    "phpantom_lsp",
     "rust_analyzer",
     "ts_ls",
 })
