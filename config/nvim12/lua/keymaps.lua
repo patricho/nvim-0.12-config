@@ -71,7 +71,17 @@ map("n", "<leader>nM", marks.prev, "[N]avigate to prev global [M]ark")
 
 -- Pickers and search
 wk.add({ { "<leader>f", group = "[F]ind" } })
-map("n", "<leader>e", function() Snacks.explorer.reveal() end, "Snacks [E]xplorer")
+map("n", "<leader>e", function()
+    local explorer = Snacks.picker.get({ source = "explorer" })[1]
+    if explorer then
+        explorer:focus()
+    elseif require("snacks.picker.resume").state.explorer then
+        -- Resume last hidden/ignored toggle state (session-only, see snacks/picker/resume.lua)
+        Snacks.picker.resume("explorer")
+    else
+        Snacks.explorer.reveal()
+    end
+end, "Snacks [E]xplorer")
 map("n", "<leader>F", function() Snacks.picker('git_files') end, "[F]ind [F]iles")
 map("n", "<leader>ff", function() Snacks.picker('git_files') end, "[F]ind [F]iles")
 map("n", "<leader>fF", function() Snacks.picker('files') end, "[F]ind all [F]iles")

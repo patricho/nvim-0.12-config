@@ -89,6 +89,7 @@ require("snacks").setup({
                 ignorecase = true,
             },
             explorer = {
+                hidden = true,
                 auto_close = true,
                 jump = { close = true },
                 layout = {
