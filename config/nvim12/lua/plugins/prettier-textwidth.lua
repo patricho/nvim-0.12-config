@@ -22,7 +22,11 @@ local function prettier_print_width(filename)
     -- patterns, so a pattern like "*.html.twig" also matches "*.twig" files.
     local ext_suffix = "." .. vim.fn.fnamemodify(filename, ":e")
     for _, override in ipairs(config.overrides or {}) do
-        for _, pattern in ipairs(override.files or {}) do
+        local patterns = override.files
+        if type(patterns) == "string" then
+            patterns = { patterns }
+        end
+        for _, pattern in ipairs(patterns or {}) do
             if pattern:sub(-#ext_suffix) == ext_suffix and override.options and override.options.printWidth then
                 return override.options.printWidth
             end
